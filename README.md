@@ -2,7 +2,6 @@
 
 ##### [Department of Computer Science - University of Victoria](http://www.csc.uvic.ca/)
 ##### [CSC 485E + SENG 480B](https://heat.csc.uvic.ca/coview/outline/2016/Fall/CSC/485E), 2016, Fall Semester
-<br>
 
 ### Idea Proposal
 
