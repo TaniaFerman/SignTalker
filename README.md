@@ -12,8 +12,8 @@ The user would place their hand a comfortable distance above the phone (for exam
 
 ### Members:
 
-- [Amanda Dash] (adash42@uvic.ca)
-- [Nora Huang] (norah@uvic.ca)
-- [Dany Cabrera] (dcabrera@uvic.ca)
-- [Tristan Partridge] (tpart526@uvic.ca)
-- [Maria Ferman] (mfermang@uvic.ca)
+- Amanda Dash [adash42@uvic.ca]
+- Nora Huang [norah@uvic.ca]
+- Dany Cabrera [dcabrera@uvic.ca]
+- Tristan Partridge [tpart526@uvic.ca]
+- Maria Ferman [mfermang@uvic.ca]
