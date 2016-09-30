@@ -8,7 +8,7 @@
   __Location:__ Computer Vision Research Lab - EOW 353
 
 #### Purpose: Change project idea
-
+#### change for fix branch problem
 #### Description: Due to the feedback that we received, we decided to change our project idea
 
 1. Idea Proposal:
