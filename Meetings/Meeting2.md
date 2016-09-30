@@ -1,6 +1,6 @@
 ![Alt text](images/signtalkerlogo.png)
 
-### Meeting 1
+### Meeting 2
 
   __Date:__ September 14, 2016
   __Beginning time:__ 14:00
