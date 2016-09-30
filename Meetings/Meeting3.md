@@ -49,7 +49,7 @@
   - __Professionally created content:__ Sets of popular quizzes and quality material reviewed by educational professionals with graduate degrees, targeting strong user interests.
   - __Advertisement:__ A smart use of advertisements that doesn’t make them intrusive to our experience, if we are sure to have a big enough community.
 
-#### Outcome: getting a stronger idea for Game2study
+#### Outcome: Getting a stronger idea for Game2study
 
 
 
