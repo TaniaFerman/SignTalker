@@ -16,3 +16,7 @@ The user would place their hand a comfortable distance above the phone (for exam
 - Dany Cabrera [dcabrera@uvic.ca]
 - Tristan Partridge [tpart526@uvic.ca]
 - Maria Ferman [mfermang@uvic.ca]
+
+### SignTalker contact email:
+
+- SignTalkerASL@gmail.com
