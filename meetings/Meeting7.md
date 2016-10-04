@@ -11,6 +11,7 @@
 #### Description: 
 
 Meeting with Lundie Russell, Coordinator of interpreting and administration services of IDHHC.
+
 Ms Russell give us useful information about the Deaf culture and gives us the contact information of Susanne Harnden the Community Outreach Worker for a subsequent meeting with her. 
 
-#### Outcome: first steps for creating our Deaf users' network.
+#### Outcome: First steps for creating our Deaf users' network.
