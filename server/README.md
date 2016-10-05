@@ -51,19 +51,19 @@ We use the API provided by Tensorflow and write our own process code in Python.
 
 ## Reference:
 #### -Paper
-     http://cs231n.stanford.edu/reports2016/214_Report.pdf
-     https://arxiv.org/pdf/1503.05830.pdf
-     https://www.researchgate.net/publication/281670522_Real-time_Sign_Language_Fingerspelling_Recognition_using_Convolutional_Neural_Networks_from_Depth_map
+     - http://cs231n.stanford.edu/reports2016/214_Report.pdf
+     - https://arxiv.org/pdf/1503.05830.pdf
+     - https://www.researchgate.net/publication/281670522_Real-time_Sign_Language_Fingerspelling_Recognition_using_Convolutional_Neural_Networks_from_Depth_map
 
 
 #### -Tensorflow
-     https://www.tensorflow.org/
+     - https://www.tensorflow.org/
 
 #### -Docker
-     https://docs.docker.com/engine/installation/linux/ubuntulinux/
-     https://sebest.github.io/post/protips-using-gunicorn-inside-a-docker-image/
+     - https://docs.docker.com/engine/installation/linux/ubuntulinux/
+     - https://sebest.github.io/post/protips-using-gunicorn-inside-a-docker-image/
 
 #### -Gunicorn
-     http://gunicorn.org/
+     - http://gunicorn.org/
 
   
