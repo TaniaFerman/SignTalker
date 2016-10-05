@@ -1,11 +1,11 @@
-## Description
+# Description
 SignTalker Server is setup on Digital Ocean.
 We use json over http/https for server/client communication.
 Gunicorn serving as the server while Tensorflow is the framework for Alphabet recognization.
 We use the API provided by Tensorflow and write our own process code in Python.
 
 
-## Instruction of build our own docker image
+# Instruction of build our own docker image
 #### -Create a droplet in digital ocean using the created ssh key (ubuntu latest version)
 #### -Follow the guide in docker to install docker engine
 #### -Docker pull thoughtram/keras
@@ -46,24 +46,24 @@ We use the API provided by Tensorflow and write our own process code in Python.
 #### -docker start signtalker
 
 
-## Training the algorithm 
+# Training the algorithm 
 
 
-## Reference:
-#### -Paper
+# Reference:
+### Paper
      - http://cs231n.stanford.edu/reports2016/214_Report.pdf
      - https://arxiv.org/pdf/1503.05830.pdf
      - https://www.researchgate.net/publication/281670522_Real-time_Sign_Language_Fingerspelling_Recognition_using_Convolutional_Neural_Networks_from_Depth_map
 
 
-#### -Tensorflow
+### Tensorflow
      - https://www.tensorflow.org/
 
-#### -Docker
+### Docker
      - https://docs.docker.com/engine/installation/linux/ubuntulinux/
      - https://sebest.github.io/post/protips-using-gunicorn-inside-a-docker-image/
 
-#### -Gunicorn
+### Gunicorn
      - http://gunicorn.org/
 
   
