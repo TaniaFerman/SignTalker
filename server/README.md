@@ -9,18 +9,13 @@ We use the API provided by Tensorflow and write our own process code in Python.
 
 ## Instruction of build our own docker image
 1. Create a droplet in digital ocean using the created ssh key (ubuntu latest version)
-<br>
 2. Follow the guide in docker to install docker engine
-<br>
 3. Pull basic docker image:
-<br>
     ```
     docker pull thoughtram/keras
     ```
-<br>
 
 4. Build our own image:
-<br>
     ...First create the build folder
     ```
     mkdir ~/signtalker
