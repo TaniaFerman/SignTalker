@@ -9,8 +9,11 @@ We use the API provided by Tensorflow and write our own process code in Python.
 
 ## Instruction of build our own docker image
 1. Create a droplet in digital ocean using the created ssh key (ubuntu latest version)
+<br>
 2. Follow the guide in docker to install docker engine
+<br>
 3. Docker pull thoughtram/keras
+<br>
 4. Build our own image
 <br>
 <br>
@@ -32,11 +35,14 @@ We use the API provided by Tensorflow and write our own process code in Python.
 	 docker start signtalker
 	 
 5. Push the docker image
-     docker login username
+   <br>
+   docker login username
+   <br>
 	 docker push norah/signtalker
 	
 - Some useful docker command
-   	* docker images
+   	
+   * docker images
 	 * docker ps
 	 * docker rmi <image_id>
 	 * docker rm  <container_id>
