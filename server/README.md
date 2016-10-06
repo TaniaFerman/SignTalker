@@ -33,7 +33,7 @@ We use the API provided by Tensorflow and write our own process code in Python.
 
 5. Push the docker image
 ```
-   docker login username
+   	docker login username
 	 docker push norah/signtalker
 ```
 	
