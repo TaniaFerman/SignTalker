@@ -13,15 +13,22 @@ We use the API provided by Tensorflow and write our own process code in Python.
 3. Docker pull thoughtram/keras
 4. Build our own image
 <br>
+<br>
      mkdir ~/signtalker
 <br>
 	 cd ~/signtalker
+<br>
 	 touch Dockerfile
-	 edit Dockerfile as needed.(The lastest version of Dockerfile we use is ./Docker/Dockerfile on github)
-	 related file using in build the image is aslo in github ./Docker copy them into ~/signtalker before build
-	 the gunicorn app is located in github ./src, copy them into ~/signtalker before build
-     docker build -t norah/signtalker .
+<br>
+	 Edit Dockerfile as needed.(The lastest version of Dockerfile we use is ./Docker/Dockerfile on github)
+<br>
+	 Related file using in build the image is aslo in github ./Docker copy them into ~/signtalker before build
+<br>
+	 The gunicorn app is located in github ./src, copy them into ~/signtalker before build
+     docker build -t norah/signtalker 
+<br>
 	 docker create -it -v ~/signtalker:/projects/signtalker --name signtalker -p 104.236.214.96:8000:8000 norah/signtalker
+	<br>
 	 docker start signtalker
 	 
 5. Push the docker image
@@ -29,7 +36,7 @@ We use the API provided by Tensorflow and write our own process code in Python.
 	 docker push norah/signtalker
 	
 - Some useful docker command
-   * docker images
+   	* docker images
 	 * docker ps
 	 * docker rmi <image_id>
 	 * docker rm  <container_id>
