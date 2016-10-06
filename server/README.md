@@ -39,7 +39,6 @@ We use the API provided by Tensorflow and write our own process code in Python.
 	docker ps
     ```		
 ⋅⋅⋅Note: After the last step above check if signtalker run normally
-
 	 
 5. Push the docker image
     ```
@@ -64,10 +63,12 @@ We use the API provided by Tensorflow and write our own process code in Python.
 1. Create a droplet in digital ocean using the created ssh key (ubuntu latest version)
 2. Follow the guide in docker to install docker engine
 3. Pull the docker image
+
     ```
     docker pull norah/signtalker
     ```
 4. Create container from this image and run it
+
     ```
     docker create -it -v ~/signtalker:/projects/signtalker --name signtalker -p 104.236.214.96:8000:8000 norah/signtalker
     docker start signtalker
