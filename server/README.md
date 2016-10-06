@@ -14,22 +14,46 @@ We use the API provided by Tensorflow and write our own process code in Python.
 2. Follow the guide in docker to install docker engine
 <br>
 <br>
-3. Docker pull thoughtram/keras
+3. Pull basic docker image
+<br>
+```
+   docker pull thoughtram/keras
+```
 <br>
 <br>
 4. Build our own image
 <br>
+     First create the build folder
 ```
      mkdir ~/signtalker
 	 cd ~/signtalker
-	 touch Dockerfile
-	 Edit Dockerfile as needed.(The lastest version of Dockerfile we use is ./Docker/Dockerfile on github)
-	 Related file using in build the image is aslo in github ./Docker copy them into ~/signtalker before build
-	 The gunicorn app is located in github ./src, copy them into ~/signtalker before build
+```
+<br>	 
+	 Then copy the files below into this folder
+	 
+```	
+	 <repo>/server/src/server/signtalkerServer.py
+	 <repo>/server/conf/gunicorn.conf
+	 <repo>/server/conf/logging.conf
+	 <repo>/server/Docker/Dockerfile
+```
+<br>
+     Build the image
+```	
      docker build -t norah/signtalker 
+```		 
+<br>
+     Verify the image	 
+```	 
 	 docker create -it -v ~/signtalker:/projects/signtalker --name signtalker -p 104.236.214.96:8000:8000 norah/signtalker
 	 docker start signtalker
-```
+	 docker ps
+```		
+<br> 
+     After the last step above check if signtalker run normally
+
+	 
+
 
 5. Push the docker image
 ```
@@ -52,11 +76,14 @@ We use the API provided by Tensorflow and write our own process code in Python.
 ## Instruction of setup the server
 1. Create a droplet in digital ocean using the created ssh key (ubuntu latest version)
 2. Follow the guide in docker to install docker engine
-
-3. Docker pull norah/signtalker
+3. Pull the docker image
 ```
- docker create -it -v ~/signtalker:/projects/signtalker --name signtalker -p 104.236.214.96:8000:8000 norah/signtalker
- docker start signtalker
+     docker pull norah/signtalker
+```
+4. Create container from this image and run it
+```
+     docker create -it -v ~/signtalker:/projects/signtalker --name signtalker -p 104.236.214.96:8000:8000 norah/signtalker
+     docker start signtalker
 ```
 
 ## Training the algorithm 
