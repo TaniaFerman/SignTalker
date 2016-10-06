@@ -39,7 +39,6 @@ We use the API provided by Tensorflow and write our own process code in Python.
 	docker ps
     ```		
 ⋅⋅⋅Note: After the last step above check if signtalker run normally
-
 	 
 5. Push the docker image
     ```
