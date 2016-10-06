@@ -33,13 +33,13 @@ We use the API provided by Tensorflow and write our own process code in Python.
 
 5. Push the docker image
 ```
-   		docker login username
+     docker login username
 	 docker push norah/signtalker
 ```
 	
 - Some useful docker command
 ```   	
-   		docker images
+     docker images
 	 docker ps
 	 docker rmi <image_id>
 	 docker rm  <container_id>
@@ -56,7 +56,6 @@ We use the API provided by Tensorflow and write our own process code in Python.
 3. Docker pull norah/signtalker
 ```
  docker create -it -v ~/signtalker:/projects/signtalker --name signtalker -p 104.236.214.96:8000:8000 norah/signtalker
-
  docker start signtalker
 ```
 
