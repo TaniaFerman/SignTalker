@@ -19,7 +19,7 @@ We use the API provided by Tensorflow and write our own process code in Python.
 <br>
 4. Build our own image
 <br>
-'''javascript
+```
      mkdir ~/signtalker
 	 cd ~/signtalker
 	 touch Dockerfile
@@ -29,13 +29,13 @@ We use the API provided by Tensorflow and write our own process code in Python.
      docker build -t norah/signtalker 
 	 docker create -it -v ~/signtalker:/projects/signtalker --name signtalker -p 104.236.214.96:8000:8000 norah/signtalker
 	 docker start signtalker
-'''
+```
 
 5. Push the docker image
-'''javascript
+```
    docker login username
 	 docker push norah/signtalker
-'''
+```
 	
 - Some useful docker command
    	
@@ -54,11 +54,11 @@ We use the API provided by Tensorflow and write our own process code in Python.
 2. Follow the guide in docker to install docker engine
 
 3. Docker pull norah/signtalker
-'''javascript
+```
  docker create -it -v ~/signtalker:/projects/signtalker --name signtalker -p 104.236.214.96:8000:8000 norah/signtalker
 
  docker start signtalker
-'''
+```
 
 ## Training the algorithm 
 
