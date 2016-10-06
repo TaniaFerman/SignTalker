@@ -10,54 +10,72 @@ We use the API provided by Tensorflow and write our own process code in Python.
 ## Instruction of build our own docker image
 1. Create a droplet in digital ocean using the created ssh key (ubuntu latest version)
 <br>
-<br>
 2. Follow the guide in docker to install docker engine
 <br>
+3. Pull basic docker image:
 <br>
-3. Docker pull thoughtram/keras
+    ```
+    docker pull thoughtram/keras
+    ```
 <br>
-<br>
-4. Build our own image
-<br>
-```
-     mkdir ~/signtalker
-	 cd ~/signtalker
-	 touch Dockerfile
-	 Edit Dockerfile as needed.(The lastest version of Dockerfile we use is ./Docker/Dockerfile on github)
-	 Related file using in build the image is aslo in github ./Docker copy them into ~/signtalker before build
-	 The gunicorn app is located in github ./src, copy them into ~/signtalker before build
-     docker build -t norah/signtalker 
-	 docker create -it -v ~/signtalker:/projects/signtalker --name signtalker -p 104.236.214.96:8000:8000 norah/signtalker
-	 docker start signtalker
-```
 
+4. Build our own image:
+<br>
+    ...First create the build folder
+    ```
+    mkdir ~/signtalker
+	cd ~/signtalker
+    ``` 
+	...Then copy the files below into this folder	 
+    ```	
+	<repo>/server/src/server/signtalkerServer.py
+	<repo>/server/conf/gunicorn.conf
+	<repo>/server/conf/logging.conf
+	<repo>/server/Docker/Dockerfile
+    ```
+    ...Build the image
+    ```	
+    docker build -t norah/signtalker 
+    ```		 
+    ...Verify the image	 
+    ```	 
+	docker create -it -v ~/signtalker:/projects/signtalker --name signtalker -p 104.236.214.96:8000:8000 norah/signtalker
+	docker start signtalker
+	docker ps
+    ```		
+    ...Note: After the last step above check if signtalker run normally
+
+	 
 5. Push the docker image
-```
-     docker login username
-	 docker push norah/signtalker
-```
+    ```
+    docker login username
+	docker push norah/signtalker
+    ```
 	
 - Some useful docker command
-```   	
-     docker images
-	 docker ps
-	 docker rmi <image_id>
-	 docker rm  <container_id>
-	 docker ps -a
-	 docker start <container_name>
-	 docker stop <container_name>
-```	
+    ```   	
+    docker images
+	docker ps
+	docker rmi <image_id>
+	docker rm  <container_id>
+	docker ps -a
+	docker start <container_name>
+	docker stop <container_name>
+    ```	
 
 
 ## Instruction of setup the server
 1. Create a droplet in digital ocean using the created ssh key (ubuntu latest version)
 2. Follow the guide in docker to install docker engine
-
-3. Docker pull norah/signtalker
-```
- docker create -it -v ~/signtalker:/projects/signtalker --name signtalker -p 104.236.214.96:8000:8000 norah/signtalker
- docker start signtalker
-```
+3. Pull the docker image
+    ```
+    docker pull norah/signtalker
+    ```
+4. Create container from this image and run it
+    ```
+    docker create -it -v ~/signtalker:/projects/signtalker --name signtalker -p 104.236.214.96:8000:8000 norah/signtalker
+    docker start signtalker
+    ```
 
 ## Training the algorithm 
 
