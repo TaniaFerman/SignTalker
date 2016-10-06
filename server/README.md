@@ -51,7 +51,7 @@ We use the API provided by Tensorflow and write our own process code in Python.
 ## Training the algorithm 
 
 
-## Reference:
+### Reference:
 #### Paper
 - http://cs231n.stanford.edu/reports2016/214_Report.pdf
 - https://arxiv.org/pdf/1503.05830.pdf
