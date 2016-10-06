@@ -10,35 +10,32 @@ We use the API provided by Tensorflow and write our own process code in Python.
 ## Instruction of build our own docker image
 1. Create a droplet in digital ocean using the created ssh key (ubuntu latest version)
 <br>
+<br>
 2. Follow the guide in docker to install docker engine
+<br>
 <br>
 3. Docker pull thoughtram/keras
 <br>
+<br>
 4. Build our own image
 <br>
-<br>
+'''javascript
      mkdir ~/signtalker
-<br>
 	 cd ~/signtalker
-<br>
 	 touch Dockerfile
-<br>
 	 Edit Dockerfile as needed.(The lastest version of Dockerfile we use is ./Docker/Dockerfile on github)
-<br>
 	 Related file using in build the image is aslo in github ./Docker copy them into ~/signtalker before build
-<br>
 	 The gunicorn app is located in github ./src, copy them into ~/signtalker before build
      docker build -t norah/signtalker 
-<br>
 	 docker create -it -v ~/signtalker:/projects/signtalker --name signtalker -p 104.236.214.96:8000:8000 norah/signtalker
-	<br>
 	 docker start signtalker
-	 
+'''
+
 5. Push the docker image
-   <br>
+'''javascript
    docker login username
-   <br>
 	 docker push norah/signtalker
+'''
 	
 - Some useful docker command
    	
@@ -57,11 +54,11 @@ We use the API provided by Tensorflow and write our own process code in Python.
 2. Follow the guide in docker to install docker engine
 
 3. Docker pull norah/signtalker
-
+'''javascript
  docker create -it -v ~/signtalker:/projects/signtalker --name signtalker -p 104.236.214.96:8000:8000 norah/signtalker
 
  docker start signtalker
-
+'''
 
 ## Training the algorithm 
 
