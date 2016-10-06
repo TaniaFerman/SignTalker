@@ -1,3 +1,5 @@
+![Alt text](images/signtalkerlogo.png)
+
 # Description
 SignTalker Server is setup on Digital Ocean.
 We use json over http/https for server/client communication.
