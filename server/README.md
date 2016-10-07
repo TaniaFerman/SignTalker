@@ -16,29 +16,31 @@ We use the API provided by Tensorflow and write our own process code in Python.
     ```
 
 4. Build our own image:
-⋅⋅⋅First create the build folder
+<br>
+<br>
+    4.1 First create the build folder
     ```
     mkdir ~/signtalker
 	cd ~/signtalker
     ``` 
-⋅⋅⋅Then copy the files below into this folder	 
+    4.2Then copy the files below into this folder	 
     ```	
 	<repo>/server/src/server/signtalkerServer.py
 	<repo>/server/conf/gunicorn.conf
 	<repo>/server/conf/logging.conf
 	<repo>/server/Docker/Dockerfile
     ```
-⋅⋅⋅Build the image
+    4.3 Build the image
     ```	
     docker build -t norah/signtalker 
     ```		 
-⋅⋅⋅Verify the image	 
+    4.4 Verify the image	 
     ```	 
 	docker create -it -v ~/signtalker:/projects/signtalker --name signtalker -p 104.236.214.96:8000:8000 norah/signtalker
 	docker start signtalker
 	docker ps
     ```		
-⋅⋅⋅Note: After the last step above check if signtalker run normally
+    - Note: After the last step above check if signtalker run normally
 	 
 5. Push the docker image
     ```
