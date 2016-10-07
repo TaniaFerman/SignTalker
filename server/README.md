@@ -17,6 +17,7 @@ We use the API provided by Tensorflow and write our own process code in Python.
 
 4. Build our own image:
 <br>
+<br>
     4.1 First create the build folder
     ```
     mkdir ~/signtalker
