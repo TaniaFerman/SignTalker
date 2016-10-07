@@ -10,29 +10,41 @@ As an alternative project. Our tool can be used for teaching ASL. In this case o
 
 ### Creating our ASL users' network.
 1. Island Deaf + Heard of Hearing Centre
+  <br>
   201 - 754 Broughton St Victoria Bc
+  <br>
   http://idhhc.ca
 
   - Susanne Harnden
+    <br>
     Comunity Outreach Worker 
+    <br>
     susanne@idhhc.ca
 
   - Lundie Russell  
+    <br>
     Coordinator of interpreting and administration services of IDHHC
+    <br>
     interpreting@idhhc.ca
 
 2. University of Victoria
   2.1 Department of Linguistics (ASL)
   - Nigel Howard
+    <br>
     ASL instructor
+    <br>
     nhoward@uvic.ca
 
   2.2 CanAssist
   - Megan Yon
+    <br>
     Client Relations Coordinator
+    <br>
     myon@uvic.ca
 
   2.3 RCSD (Disability Services)
   - Kristi Falconer
+    <br>
     Coordinator of interpreting/transcribing services and student advisor
+    <br>
     kristi@uvic.ca
