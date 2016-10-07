@@ -22,12 +22,12 @@ As an alternative project. Our tool can be used for teaching ASL. In this case o
     susanne@idhhc.ca
 
   - Lundie Russell  
-    <br>
     Coordinator of interpreting and administration services of IDHHC
     <br>
     interpreting@idhhc.ca
 
 2. University of Victoria
+  <br>
   2.1 Department of Linguistics (ASL)
   - Nigel Howard
     <br>
