@@ -34,6 +34,7 @@ As an alternative project. Our tool can be used for teaching ASL. In this case o
 <br>
 Victoria BC
   <br>
+  <br>
   2.1 Department of Linguistics (ASL)
   - Nigel Howard
     <br>
