@@ -11,7 +11,9 @@ As an alternative project. Our tool can be used for teaching ASL. In this case o
 ### Creating our ASL users' network.
 1. Island Deaf + Heard of Hearing Centre
   <br>
-  201 - 754 Broughton St Victoria Bc
+  201 - 754 Broughton St 
+  <br>
+  Victoria Bc
   <br>
   http://idhhc.ca
 
@@ -27,6 +29,10 @@ As an alternative project. Our tool can be used for teaching ASL. In this case o
     interpreting@idhhc.ca
 
 2. University of Victoria
+<br>
+3800 Finnerty Road
+<br>
+Victoria BC
   <br>
   2.1 Department of Linguistics (ASL)
   - Nigel Howard

@@ -9,6 +9,10 @@ We are proposing a mobile app that will act as a tool to enable those in the dea
 
 The user would place their hand a comfortable distance above the phone (for example, while the device lays flat on a table) with the app open.  Prior to that, they will have performed a set of calibration tests to customize the performance of the app to their hand.  They will fingerspell like normal and tap the phone screen once they finish a word.  The interpreted word is then fed through the Google Text Prediction API to remove false-positive results and feed to a text-to-speech API.  Thus, allowing the user to to communicate verbally in near real-time.
 
+### Idea Proposal Video
+
+(https://youtu.be/yspqSYtJCss)
+
 ### Members:
 
 - Amanda Dash [adash42@uvic.ca]
