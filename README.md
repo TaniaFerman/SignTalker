@@ -11,7 +11,7 @@ The user would place their hand a comfortable distance above the phone (for exam
 
 ### Idea Proposal Video
 
-https://youtu.be/yspqSYtJCss/cc_load_policy=1
+https://youtu.be/yspqSYtJCss
 
 ### Members:
 
