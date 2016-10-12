@@ -1,7 +1,7 @@
-#container {
+/*#container {
     height:100px;
     line-height:100px;
-}
-.center {
+}*/
+div {
   text-align: center;
 }
