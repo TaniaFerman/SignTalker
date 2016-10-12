@@ -1,6 +1,6 @@
 ![Alt text](images/signtalkerlogo.png)
 
-<div id="container">
+<div center>
                    Apache License
                 Version 2.0, January 2004
             http://www.apache.org/licenses/
