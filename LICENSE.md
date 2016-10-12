@@ -1,8 +1,10 @@
 ![Alt text](images/signtalkerlogo.png)
 
-###                   <center>Apache License</center>
-###                <center>Version 2.0, January 2004</center>
-####            <center>http://www.apache.org/licenses/</center>
+<div id="container">
+                   Apache License
+                Version 2.0, January 2004
+            http://www.apache.org/licenses/
+</div>
 
    TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
