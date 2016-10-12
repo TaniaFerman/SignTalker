@@ -12,7 +12,6 @@
 #include <android/log.h>
 
 #define LOG_TAG "Native_Lib_JNI"
-#define LOGD(...) ((void)__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__))
 
 using namespace cv;
 using namespace std;
@@ -25,6 +24,7 @@ int cluster(Mat &hsv, Mat &mask, Mat &cluster0, Mat &cluster1);
 void postprocess(Mat &hsv, Mat &gray, Mat &mask);
 Mat find_edges(Mat &gray);
 void findHand(Mat &src);
+void logTxt(const char *txt);
 
 JNIEXPORT jboolean JNICALL
 Java_com_example_danyalejandro_trywithndk_MainActivity_nativeFunction(JNIEnv *env, jobject instance, long iAddr) {
@@ -34,7 +34,7 @@ Java_com_example_danyalejandro_trywithndk_MainActivity_nativeFunction(JNIEnv *en
     flip(*src, *src, 1);
 
     // Amanda's magic
-
+    logTxt("hola mundo!");
     findHand(*src);
 
 
@@ -44,6 +44,10 @@ Java_com_example_danyalejandro_trywithndk_MainActivity_nativeFunction(JNIEnv *en
     //Canny(*img, *img, 80, 100, 3);
 
     return true;
+}
+
+void logTxt(const char *txt) {
+    __android_log_write(ANDROID_LOG_ERROR, "MyLogs", txt);
 }
 
 void findHand(Mat &src)
@@ -137,10 +141,13 @@ int cluster(Mat &hsv, Mat &mask, Mat &cluster0, Mat &cluster1) {
     Point2f b(centers.at<float>(1,0), centers.at<float>(1,1));
     double res = norm(a-b);
 
-    LOGD("\n this is log messge \n");
-    cout << "Label 0 = " << sum << endl;
-    cout << "Label 1 = " << (labels.rows - sum) << endl;
-    cout << "Diff = " << res << endl;
+    ostringstream out;
+    out << "Label 0 = " << sum;
+    __android_log_write(ANDROID_LOG_ERROR, "MyLogs", out.str().c_str());
+    out << "Label 1 = " << labels.rows - sum;
+    __android_log_write(ANDROID_LOG_ERROR, "MyLogs", out.str().c_str());
+    out << "Diff = " << res;
+    __android_log_write(ANDROID_LOG_ERROR, "MyLogs", out.str().c_str());
 
     if (res < 10) {
         bitwise_or(cluster0, cluster1, cluster0);
