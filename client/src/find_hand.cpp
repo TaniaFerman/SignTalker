@@ -15,8 +15,9 @@ void preprocess( Mat src, Mat &dst, Mat &mask );
 int cluster(Mat &hsv, Mat &mask, Mat &cluster0, Mat &cluster1);
 void postprocess(Mat &hsv, Mat &gray, Mat &mask);
 Mat find_edges(Mat &gray);
+void findHand(Mat &src);
 
-
+/*
 int main( int argc, char** argv )
 {
     Mat src, equ, hsv, mask, color_codes;
@@ -40,13 +41,25 @@ int main( int argc, char** argv )
 
     resizeWindow("Cluster", 800, 600);
     waitKey(0); 
-    /* 
-    if (c == 0) 
-        postprocess(hsv, equ, cluster0);
-    else
-        postprocess(hsv, equ, cluster1);
-    */
 }
+*/
+
+void findHand(Mat &src)
+{
+    Mat equ, hsv, mask;
+    preprocess(src, equ, mask);
+    
+    cvtColor(src, hsv, COLOR_BGR2HSV);
+   
+    Mat cluster0, cluster1; 
+    int c = cluster(hsv, mask, cluster0, cluster1);
+    
+    if (c == 0 )
+        src = cluster0;
+    else
+        src = cluster1;
+
+} 
 
 int cluster(Mat &hsv, Mat &mask, Mat &cluster0, Mat &cluster1) {
 
