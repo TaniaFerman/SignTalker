@@ -13,6 +13,12 @@
 
 #define LOG_TAG "Native_Lib_JNI"
 
+#ifdef debug
+#include <stdarg.h> //needed for va_args
+#include <time.h> //needed for strftime
+void print(const char* format, ... );
+#endif
+
 using namespace cv;
 using namespace std;
 
@@ -21,9 +27,15 @@ extern "C" {
 Mat skinFilter(const Mat& src, Scalar lower, Scalar upper);
 void preprocess( Mat src, Mat &dst, Mat &mask );
 int cluster(Mat &hsv, Mat &mask, Mat &cluster0, Mat &cluster1);
-void postprocess(Mat &hsv, Mat &gray, Mat &mask);
+Mat postprocess(Mat &hsv, Mat &gray, Mat &mask, vector<Point> &shape);
 Mat find_edges(Mat &gray);
+void show(const char *name, Mat &img);
+
+Mat getFourierDescriptor( vector<Point> &points);
+
 void findHand(Mat &src);
+
+
 void logTxt(const char *txt);
 
 JNIEXPORT jboolean JNICALL
@@ -50,58 +62,107 @@ void logTxt(const char *txt) {
     __android_log_write(ANDROID_LOG_ERROR, "MyLogs", txt);
 }
 
-void findHand(Mat &src)
-{
+void findHand(Mat &src) {
     Mat equ, hsv, mask;
+    
     preprocess(src, equ, mask);
-
+    
     cvtColor(src, hsv, COLOR_BGR2HSV);
-
+   
     Mat cluster0, cluster1;
     int c = cluster(hsv, mask, cluster0, cluster1);
 
-    if (c == 0 )
-        src = cluster0;
-    else
-        src = cluster1;
 
+    Mat cluster_inv;
+
+    if (c == 0) 
+        bitwise_not ( cluster0, cluster_inv ); 
+    else if (c == 1) 
+        bitwise_not ( cluster1, cluster_inv ); 
+    else
+        return;    
+
+    show("Cluster", cluster_inv);
+    vector<Point> shape;
+    Mat result = postprocess(hsv, equ, cluster_inv, shape);
+
+    getFourierDescriptor(shape); 
+
+    src = result;
 }
 
+void print(const char* format, ... ) {
+#ifdef debug
+    va_list args;  
+    
+    char buff[100]; //Buffer for the time
+    
+    time_t now = time (0); //Get current time object
+    
+    //Format time object into string using the format provided
+    strftime(buff, 100, "%Y-%m-%d %H:%M:%S", localtime (&now)); 
+    
+    //Print time to the screen
+    printf ("%s: ", buff);
+
+    //Based on format, read in args from (...)
+    va_start(args, format);
+    
+    //Fill-in format with args and print to screen
+    vprintf(format, args);
+
+    //Release args memory
+    va_end(args);
+
+    //Create a newline
+    printf("\n");
+
+    //Flush standard out to make sure this gets printed
+    fflush(stdout);
+#endif
+}
+
+void show(const char *name, Mat &img)
+{
+#ifdef debug
+    namedWindow( name, 0 );
+    imshow( name, img );
+    resizeWindow(name, 800, 600);
+#endif
+}
 
 int cluster(Mat &hsv, Mat &mask, Mat &cluster0, Mat &cluster1) {
 
-    int hbins = 30, sbins = 32;
+    //int hbins = 30, sbins = 32;
+    int hbins = 20, sbins = 16;
     int hBinSize = 180 / hbins;
-    int sBinSize = 256 / 32;
+    int sBinSize = 256 / sbins;
     int histSize[] = {hbins, sbins};
-
+    
     float hranges[] = { 0, 180 };
     float sranges[] = { 0, 256 };
     const float* ranges[] = { hranges, sranges };
     MatND hist;
-    int channels[] = {0, 2};  //hue, value
+    int channels[] = {0, 1};  //hue, value
 
-    calcHist( &hsv, 1, channels, mask, // Mat() do not use mask
-              hist, 2, histSize, ranges,
-              true, // the histogram is uniform
-              false );
+    calcHist( &hsv, 1, channels, Mat(), // Mat() do not use mask
+             hist, 2, histSize, ranges,
+             true, // the histogram is uniform
+             false );
     double maxVal=0;
     minMaxLoc(hist, 0, &maxVal, 0, 0);
 
-    int scale = 10;
     vector<Point3f> points;
-
-    //namedWindow( "test", 1 );
+    
     int idx = 0;
     for( int h = 0; h < hbins; h++ ) {
         for( int s = 0; s < sbins; s++ )
         {
             float binVal = hist.at<float>(h, s);
-            int intensity = cvRound(binVal*255/maxVal);
+            int v = cvRound(binVal*255/maxVal);
 
-            if (intensity > 27) {
-                points.push_back(Point3f(h,s,intensity));
-                //cout << "Adding: " << h << "," << s << "," << intensity << endl;
+            if (v > 0) {
+                points.push_back(Point3f(h,s,v)); 
             }
         }
     }
@@ -110,49 +171,54 @@ int cluster(Mat &hsv, Mat &mask, Mat &cluster0, Mat &cluster1) {
     Mat labels;
     Mat p = Mat(points);
     p.convertTo(p, CV_32F);
+   
+    if ( points.size() < 2 ) {
+        return -1;
+    }
 
-
-    kmeans( p, 2, labels,
+    kmeans( p, 2, labels, 
             TermCriteria(TermCriteria::EPS + TermCriteria::MAX_ITER, 10, 1.0),
             10, KMEANS_PP_CENTERS, centers);
 
 
     cluster0 = Mat::zeros(hsv.rows, hsv.cols, CV_8UC1);
     cluster1 = Mat::zeros(hsv.rows, hsv.cols, CV_8UC1);
+    
     int sum = 0;
     for(int i = 0; i < labels.rows; i++)
     {
         const int* L = labels.ptr<int>(i);
         const float* P = p.ptr<float>(i);
         for(int j = 0; j < labels.cols; j++) {
-            //cout << L[j] << "," << P[j] << P[j+1] << P[j+2] << endl;
-            Mat tmp = skinFilter(hsv, Scalar(P[j]*hBinSize, P[j+2], P[j+1]*sBinSize), Scalar((P[j]+1)*hBinSize, 256, (P[j+1]+1)*sBinSize));
+            Scalar lower((P[j]*hBinSize)-0, (P[j+1]*sBinSize)-20, 127); //P[j+2]-10);
+            Scalar upper(((P[j]+1)*hBinSize)+0, ((P[j+1]+1)*sBinSize)+20, 255); //P[j+2]+10 );
+
+            Mat tmp = skinFilter(hsv, lower, upper); 
             if (L[j] == 0) {
                 sum++;
                 bitwise_or(tmp, cluster0, cluster0);
             } else {
                 bitwise_or(tmp, cluster1, cluster1);
             }
+
         }
     }
 
 
     Point2f a(centers.at<float>(0,0), centers.at<float>(0,1));
     Point2f b(centers.at<float>(1,0), centers.at<float>(1,1));
+
+    //print("Label 0 = %d", sum);
+    //print("Label 1 = %d", (labels.rows - sum));
+
+    /*
     double res = norm(a-b);
-
-    ostringstream out;
-    out << "Label 0 = " << sum;
-    __android_log_write(ANDROID_LOG_ERROR, "MyLogs", out.str().c_str());
-    out << "Label 1 = " << labels.rows - sum;
-    __android_log_write(ANDROID_LOG_ERROR, "MyLogs", out.str().c_str());
-    out << "Diff = " << res;
-    __android_log_write(ANDROID_LOG_ERROR, "MyLogs", out.str().c_str());
-
+    print("Diff = %d", res);
     if (res < 10) {
         bitwise_or(cluster0, cluster1, cluster0);
         return 0;
     }
+    */
 
     int bestCluster = -1;
     if (sum > (labels.rows - sum)) {
@@ -169,7 +235,7 @@ Mat skinFilter(const Mat& src, Scalar lower, Scalar upper)
 {
     assert(src.type() == CV_8UC3);
 
-    Mat skin_only;
+    Mat skin_only; 
     inRange(src, lower, upper, skin_only);
 
     return skin_only;
@@ -180,8 +246,8 @@ void preprocess( Mat src, Mat &dst, Mat &mask )
 {
     int brightness = 0;
     int contrast = 0;
-
-    Mat image;
+    
+    Mat image; 
     cvtColor(src, image, COLOR_BGR2GRAY);
 
     /*
@@ -210,7 +276,7 @@ void preprocess( Mat src, Mat &dst, Mat &mask )
 Mat find_edges(Mat &gray)
 {
     Mat edges;
-    float sigma = 0.50;
+    float sigma = 0.50; 
     Scalar vs = cv::mean(gray);
     float v = vs[0];
     int lower = int( std::max(0.0, (1.0 - sigma) * v) );
@@ -219,5 +285,53 @@ Mat find_edges(Mat &gray)
 
     return edges;
 }
+
+Mat postprocess(Mat &hsv, Mat &gray, Mat &mask, vector<Point> &shape) 
+{
+    Mat edges = find_edges(mask);
+    show("Canny", edges); 
+    
+    vector<vector<Point> > contours;
+    vector<Vec4i> hierarchy;
+    findContours( mask, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0,0) );
+    
+    int longest = -1; int idx = -1;
+    for( int i = 0; i< contours.size(); i++ )
+    {
+        int len = arcLength(contours[i], true);
+        if (len > longest) {
+            longest = len;
+            idx = i;
+        }
+    } 
+        
+    Mat drawing = Mat::zeros( gray.size(), CV_8UC1 );
+    drawContours( drawing, contours, idx, 255, 2, 8, hierarchy, 0, Point(0,0) );
+    show("Drawing", drawing);
+    shape = contours[idx];
+
+    return drawing;
+}
+
+Mat getFourierDescriptor( vector<Point> &points)
+{
+    /*
+    p_complex = np.empty(points.shape[:-1], dtype=complex)
+    p_complex.real = points[:, 0]
+    p_complex.imag = points[:, 1]
+    */
+    Mat p_complex = Mat::zeros(points.size()).astype(complex); 
+    for (int i = 0; i < points.size(); i++) {
+        Point p = points.at<Point>(i);
+        p_complex.at<complex>(i) = complex(p.x, p.y);
+    }
+
+    //All x coordinates are real
+    //All y coordinates are imaginary
+    Mat fourierTransform;
+    dft(Mat(points), fourierTransform, DFT_SCALE|DFT_COMPLEX_OUTPUT);
+    return fourierTransform;
+}
+
 
 }
