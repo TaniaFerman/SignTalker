@@ -3,7 +3,7 @@
 ##ASL Interpreters.
 
 ### Description
-This is a list of the ASL Interpreters I found in Victoria.
+This is a list of the ASL Interpreters found in Victoria.
 
 1. Jen Ferris [jenlferris@gmail.com]
 2. Nicole Pedneault [nicole.pedneault@gmail.com]
