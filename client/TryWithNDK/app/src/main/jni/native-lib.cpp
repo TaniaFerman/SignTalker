@@ -31,7 +31,6 @@ void preprocess( Mat src, Mat &dst, Mat &mask );
 int cluster(Mat &hsv, Mat &mask, Mat &cluster0, Mat &cluster1);
 Mat postprocess(Mat &hsv, Mat &gray, Mat &mask, vector<Point> &shape);
 Mat find_edges(Mat &gray);
-void show(const char *name, Mat &img);
 
 void findHand(Mat &src, vector<Point> &points);
 
@@ -48,12 +47,11 @@ Java_com_example_danyalejandro_trywithndk_MainActivity_nativeFunction(JNIEnv *en
     // Prepare source image
     Mat *src = (Mat*) iAddr;
     flip(*src, *src, 1);
+    //__android_log_write(ANDROID_LOG_ERROR, "MyLogs", (to_string(a)).c_str());
 
     // Amanda's magic
-    logTxt("hola mundo!");
-    
     vector<Point> fourier;
-    findHand(*src, *fourier);
+    findHand(*src, fourier);
 
 
     //Mat imgt = img->t();
@@ -89,14 +87,14 @@ void findHand(Mat &src, vector<Point> &fourier) {
     else
         return;    
 
-    show("Cluster", cluster_inv);
+    //show("Cluster", cluster_inv);
     vector<Point> shape;
     Mat result = postprocess(hsv, equ, cluster_inv, shape);
 
     myFourier(shape, fourier);
     for(int i = 0; i < fourier.size(); i++) 
         circle(src, fourier[i], 10, Scalar::all(255), -1, 8, 0);
-    show("Fourier", src);
+    //show("Fourier", src);
 
     //print("Fourier points = %d", fourier.size());
 
