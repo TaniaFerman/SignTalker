@@ -13,11 +13,14 @@
 
 #define LOG_TAG "Native_Lib_JNI"
 
-#ifdef debug
 #include <stdarg.h> //needed for va_args
 #include <time.h> //needed for strftime
+#include <fstream>
 void print(const char* format, ... );
-#endif
+void show(const char *name, cv::Mat &img);
+void show(const char *name, cv::Mat &img1, cv::Mat &img2);
+void writeToFile(std::fstream &fp, const char* format, std::vector<cv::Point> &fourier);
+std::vector<std::string> getNextLineAndSplitIntoTokens(std::istream& str);
 
 using namespace cv;
 using namespace std;
@@ -31,6 +34,9 @@ void preprocess( Mat src, Mat &dst, Mat &mask );
 int cluster(Mat &hsv, Mat &mask, Mat &cluster0, Mat &cluster1);
 Mat postprocess(Mat &hsv, Mat &gray, Mat &mask, vector<Point> &shape);
 Mat find_edges(Mat &gray);
+Mat merge(Mat &img1, Mat &img2);
+
+vector<vector<vector<Point> > > loadTemplates();
 
 void findHand(Mat &src, vector<Point> &points);
 
@@ -50,14 +56,38 @@ Java_com_example_danyalejandro_trywithndk_MainActivity_nativeFunction(JNIEnv *en
     //__android_log_write(ANDROID_LOG_ERROR, "MyLogs", (to_string(a)).c_str());
 
     // Amanda's magic
+    vector<vector<vector<Point> > > templates = loadTemplates();
+    
+    
     vector<Point> fourier;
     findHand(*src, fourier);
 
+    float bestMatch = 1000;
+    int bestIdx = -1; 
+    for(int j = 0; j < templates.size(); j++) { 
+        double res1 = 10000; //, res2, res3 = 0; 
+        vector<vector<Point> > sContour = templates[j];
+        for (int i = 0; i < sContour.size(); i++) { 
+            double res = matchShapes(fourier, sContour[i], CV_CONTOURS_MATCH_I2, 0);
+            if (res < res1) res1 = res;
+        }
 
-    //Mat imgt = img->t();
-    //transpose(*img, *img);
+        if(res1 < bestMatch && res1 < 2.0) {
+            bestMatch = res1;
+            bestIdx = j;
+        }
+    }
 
-    //Canny(*img, *img, 80, 100, 3);
+    if (bestIdx < 0) 
+        putText(src, "No match", Point2f(20,50), FONT_HERSHEY_PLAIN, 4,  Scalar::all(255), 5);
+    else if (bestIdx == 0) 
+        putText(src, "Match=A", Point2f(20,50), FONT_HERSHEY_PLAIN, 4,  Scalar::all(255), 5);
+    else if (bestIdx == 1) 
+        putText(src, "Match=B", Point2f(20,50), FONT_HERSHEY_PLAIN, 4,  Scalar::all(255), 5);
+    else if (bestIdx == 2) 
+        putText(src, "Match=C", Point2f(20,50), FONT_HERSHEY_PLAIN, 4,  Scalar::all(255), 5);
+    else if (bestIdx == 3) 
+        putText(src, "Match=D", Point2f(20,50), FONT_HERSHEY_PLAIN, 4,  Scalar::all(255), 5);
 
     return true;
 }
@@ -67,6 +97,41 @@ void logTxt(const char *txt) {
 }
 
 /* Amanda's code */
+vector<vector<vector<Point> > > loadTemplates()
+{
+    vector<string> templates = {"a.csv", "b.csv", "c.csv", "d.csv"};
+    vector<vector<vector<Point> > >  all_contours;
+
+    for (int j = 0; j < templates.size(); j++) {
+        ifstream ifp(templates[j]);
+        vector<vector<Point> > sContour;
+        string label;
+       
+        if(ifp.is_open()) {
+
+            for(;;) {
+                vector<string> reference = getNextLineAndSplitIntoTokens(ifp);    
+                vector<Point> contour;
+                if (reference.size() > 0) {
+                    label = reference[reference.size()-1]; 
+                    for(int i = 0; i < reference.size()-2; i+=2)
+                    {
+                        contour.push_back(Point(std::stoi(reference[i]), std::stoi(reference[i+1]))); 
+                    }
+                    sContour.push_back(contour);
+                } else {
+                    break;
+                }
+            }
+        }
+
+        all_contours.push_back(sContour);
+        ifp.close(); 
+    }
+
+    return all_contours;
+}
+
 void findHand(Mat &src, vector<Point> &fourier) {
     Mat equ, hsv, mask;
     
@@ -87,64 +152,25 @@ void findHand(Mat &src, vector<Point> &fourier) {
     else
         return;    
 
-    //show("Cluster", cluster_inv);
+    show("Cluster", cluster_inv);
     vector<Point> shape;
     Mat result = postprocess(hsv, equ, cluster_inv, shape);
 
     myFourier(shape, fourier);
+
+#ifdef debug
     for(int i = 0; i < fourier.size(); i++) 
         circle(src, fourier[i], 10, Scalar::all(255), -1, 8, 0);
-    //show("Fourier", src);
-
-    //print("Fourier points = %d", fourier.size());
+    show("Fourier", src);
+#endif 
 
     src = result;
 }
 
-void print(const char* format, ... ) {
-#ifdef debug
-    va_list args;  
-    
-    char buff[100]; //Buffer for the time
-    
-    time_t now = time (0); //Get current time object
-    
-    //Format time object into string using the format provided
-    strftime(buff, 100, "%Y-%m-%d %H:%M:%S", localtime (&now)); 
-    
-    //Print time to the screen
-    printf ("%s: ", buff);
-
-    //Based on format, read in args from (...)
-    va_start(args, format);
-    
-    //Fill-in format with args and print to screen
-    vprintf(format, args);
-
-    //Release args memory
-    va_end(args);
-
-    //Create a newline
-    printf("\n");
-
-    //Flush standard out to make sure this gets printed
-    fflush(stdout);
-#endif
-}
-
-void show(const char *name, Mat &img)
-{
-#ifdef debug
-    namedWindow( name, 0 );
-    imshow( name, img );
-    resizeWindow(name, 800, 600);
-#endif
-}
-
 int cluster(Mat &hsv, Mat &mask, Mat &cluster0, Mat &cluster1) {
 
-    //int hbins = 30, sbins = 32;
-    int hbins = 20, sbins = 16;
+    int hbins = 30, sbins = 32;
+    //int hbins = 20, sbins = 16;
     int hBinSize = 180 / hbins;
     int sBinSize = 256 / sbins;
     int histSize[] = {hbins, sbins};
@@ -153,7 +179,7 @@ int cluster(Mat &hsv, Mat &mask, Mat &cluster0, Mat &cluster1) {
     float sranges[] = { 0, 256 };
     const float* ranges[] = { hranges, sranges };
     MatND hist;
-    int channels[] = {0, 1};  //hue, value
+    int channels[] = {0, 1};  //hue, saturation 
 
     calcHist( &hsv, 1, channels, Mat(), // Mat() do not use mask
              hist, 2, histSize, ranges,
@@ -214,21 +240,19 @@ int cluster(Mat &hsv, Mat &mask, Mat &cluster0, Mat &cluster1) {
         }
     }
 
+    cout << centers << endl;
 
     Point2f a(centers.at<float>(0,0), centers.at<float>(0,1));
     Point2f b(centers.at<float>(1,0), centers.at<float>(1,1));
     double res = norm(a-b);
-
-    //print("Label 0 = %d", sum);
-    //print("Label 1 = %d", (labels.rows - sum));
-
-    /*
     print("Diff = %d", res);
-    if (res < 10) {
+    print("Label 0 = %d", sum);
+    print("Label 1 = %d", (labels.rows - sum));
+
+    if (res < 3) {
         bitwise_or(cluster0, cluster1, cluster0);
         return 0;
     }
-    */
 
     int bestCluster = -1;
     if (sum > (labels.rows - sum)) {
@@ -298,8 +322,8 @@ Mat find_edges(Mat &gray)
 
 Mat postprocess(Mat &hsv, Mat &gray, Mat &mask, vector<Point> &shape) 
 {
-    Mat edges = find_edges(mask);
-    show("Canny", edges); 
+    //Mat edges = find_edges(mask);
+    //show("Canny", edges); 
     
     vector<vector<Point> > contours;
     vector<Vec4i> hierarchy;
@@ -576,6 +600,23 @@ vector<Point2d> ReSampleContour(vector<Point> &c, int nbElt)
     return r;
 }
 
+std::vector<std::string> getNextLineAndSplitIntoTokens(std::istream& str)
+{
+    std::vector<std::string>   result;
+    std::string                line;
+    std::getline(str,line);
+
+    std::stringstream          lineStream(line);
+    std::string                cell;
+
+    while(std::getline(lineStream,cell, ','))
+    {
+        result.push_back(cell);
+    }
+    
+    return result;
+}
+
 void myFourier(vector<Point> &contours, vector<Point> &fourier)
 {
     
@@ -590,16 +631,33 @@ void myFourier(vector<Point> &contours, vector<Point> &fourier)
    
     MatchDescriptor md;
 
+    /*
+    ifstream fp("a.csv");
+    vector<string> reference = getNextLineAndSplitIntoTokens(fp);    
+    vector<Point2d> sContour;
+    for(int i = 0; i < reference.size()-2; i+=2)
+    {
+        sContour.push_back(Point(std::stoi(reference[i]), std::stoi(reference[i+1]))); 
+    }
+    f.close(); 
+    vector<Point2d> zref;
+    vector<Point2d> Zref;
+    for (int j=0;j<sContour.size();j++)
+        zref.push_back(sContour[(j*10)%sContour.size()]);
+    dft(zref,Zref,DFT_SCALE|DFT_REAL_OUTPUT);
+     
+    */
     //This would be the reference contour    
-    md.sContour=Z;
+    md.sContour=Z; //Zref;
     md.nbDesFit=20;
     float alpha,phi,s;
 
     md.AjustementRtSafe(Z,alpha,phi,s);
-    
     complex<float> expitheta=s*complex<float>(cos(phi), sin(phi));
+    cout<<"Fourier distance " << md.Distance(expitheta,alpha) << endl;
     for (int j=1;j<Z.size();j++)
     {
+        //complex<float> zr(Zref[j].x,Zref[j].y);
         complex<float> zr(Z[j].x,Z[j].y);
         zr= zr*expitheta*exp(alpha*md.frequence[j]*complex<float>(0,1));
         Z[j].x = zr.real();
@@ -609,15 +667,12 @@ void myFourier(vector<Point> &contours, vector<Point> &fourier)
     for (int j = 0; j<z.size();j++)
         fourier.push_back(Point(z[j].x, z[j].y));
   
-    /* 
-    Mat mc=Mat::zeros(result.size(),CV_8UC3);
-    Point baricenter(0,0);
-    for( int i = 0; i < ctrRotated.size(); i++ )
-        baricenter += ctrRotated[i];
-    baricenter.x /= ctrRotated.size();
-    baricenter.y /= ctrRotated.size();
-    std::sort(ctrRotated.begin()+4, ctrRotated.end(),[baricenter](Point i, Point j){ return myLess(i,j,baricenter); });
-    */
+    Point center(0,0);
+    for( int i = 0; i < fourier.size(); i++ )
+        center += fourier[i];
+    center.x /= fourier.size();
+    center.y /= fourier.size();
+    std::sort(fourier.begin()+4, fourier.end(),[center](Point i, Point j){ return myLess(i,j,center); });
 }
 
 bool myLess(Point a, Point b, Point center)
@@ -646,5 +701,71 @@ bool myLess(Point a, Point b, Point center)
     return d1 > d2;
 }
 
+
+/*************************DEBUG FUNCTIONS**********************************************************************/
+
+void writeToFile(fstream &fp, const char* label, vector<Point> &fourier)
+{
+#ifdef debug
+    for(int i = 0; i < fourier.size(); i++)
+    {
+        Point p = fourier[i];
+        fp << p.x << "," << p.y << ",";
+    }
+    fp << label << "\n"; 
+#endif
+}
+
+void print(const char* format, ... ) {
+#ifdef debug
+    va_list args;  
+    
+    char buff[100]; //Buffer for the time
+    
+    time_t now = time (0); //Get current time object
+    
+    //Format time object into string using the format provided
+    strftime(buff, 100, "%Y-%m-%d %H:%M:%S", localtime (&now)); 
+    
+    //Print time to the screen
+    printf ("%s: ", buff);
+
+    //Based on format, read in args from (...)
+    va_start(args, format);
+    
+    //Fill-in format with args and print to screen
+    vprintf(format, args);
+
+    //Release args memory
+    va_end(args);
+
+    //Create a newline
+    printf("\n");
+
+    //Flush standard out to make sure this gets printed
+    fflush(stdout);
+#endif
+}
+
+void show(const char *name, Mat &img)
+{
+#ifdef debug
+    namedWindow( name, 0 );
+    imshow( name, img );
+    resizeWindow(name, 800, 600);
+#endif
+}
+
+Mat merge(Mat &img1, Mat &img2)
+{
+    Size sz1 = img1.size();
+    Size sz2 = img2.size();
+    Mat img3(sz1.height, sz1.width+sz2.width, CV_8UC3);
+    Mat left(img3, Rect(0, 0, sz1.width, sz1.height));
+    img1.copyTo(left);
+    Mat right(img3, Rect(sz1.width, 0, sz2.width, sz2.height));
+    img2.copyTo(right);
+    return img3;    
+} 
 
 }

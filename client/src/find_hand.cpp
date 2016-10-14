@@ -8,11 +8,14 @@
 #include <iostream>
 #include  <vector>
 
-#ifdef debug
 #include <stdarg.h> //needed for va_args
 #include <time.h> //needed for strftime
+#include <fstream>
 void print(const char* format, ... );
-#endif
+void show(const char *name, cv::Mat &img);
+void show(const char *name, cv::Mat &img1, cv::Mat &img2);
+void writeToFile(std::fstream &fp, const char* format, std::vector<cv::Point> &fourier);
+std::vector<std::string> getNextLineAndSplitIntoTokens(std::istream& str);
 
 using namespace std;
 using namespace cv;
@@ -22,7 +25,9 @@ void preprocess( Mat src, Mat &dst, Mat &mask );
 int cluster(Mat &hsv, Mat &mask, Mat &cluster0, Mat &cluster1);
 Mat postprocess(Mat &hsv, Mat &gray, Mat &mask, vector<Point> &shape);
 Mat find_edges(Mat &gray);
-void show(const char *name, Mat &img);
+Mat merge(Mat &img1, Mat &img2);
+
+vector<vector<vector<Point> > > loadTemplates();
 
 void findHand(Mat &src, vector<Point> &points);
 
@@ -45,33 +50,123 @@ int main( int argc, char** argv )
         cout << "Failed to open " << argv[1] << endl;
         return -1;
     }
+    
+    
+    //fstream fp;
+    //fp.open ("fourier.csv",std::fstream::out);
+
+    vector<vector<vector<Point> > > templates = loadTemplates();
 
     Mat src;
-    vector<Point> prev_shape;
-    for(;;)
+    bool loop = true;
+    int fnum = -1;
+    while(loop)
     {
         Mat frame;
         cap >> src; // get a new frame from camera
-
+        fnum++;
         if (src.empty())
             break;
 
         vector<Point> fourier;
+        Mat original = src.clone();
         findHand(src, fourier);
-       
-        /* 
-        if (prev_shape.size() > 0) {
-            double res = matchShapes(shape, prev_shape, CV_CONTOURS_MATCH_I3, 0);
-            print("Shape match = %f", res);
-        } 
+    
+        float bestMatch = 1000;
+        int bestIdx = -1; 
+        for(int j = 0; j < templates.size(); j++) { 
+            double res1 = 10000; //, res2, res3 = 0; 
+            vector<vector<Point> > sContour = templates[j];
+            for (int i = 0; i < sContour.size(); i++) { 
+                double res = matchShapes(fourier, sContour[i], CV_CONTOURS_MATCH_I2, 0);
+                if (res < res1) res1 = res;
+                //res1 += res;    
+                
+            }
+            
+            //res1 /= sContour.size();
 
-        prev_shape = shape;
+            if(res1 < bestMatch && res1 < 2.0) {
+                bestMatch = res1;
+                bestIdx = j;
+            }
+            
+            print("%d match = %f (best=%d,%f)", j, res1, bestIdx, bestMatch);
+        }
+
+        if (bestIdx < 0) 
+            putText(src, "No match", Point2f(20,50), FONT_HERSHEY_PLAIN, 4,  Scalar::all(255), 5);
+        else if (bestIdx == 0) 
+            putText(src, "Match=A", Point2f(20,50), FONT_HERSHEY_PLAIN, 4,  Scalar::all(255), 5);
+        else if (bestIdx == 1) 
+            putText(src, "Match=B", Point2f(20,50), FONT_HERSHEY_PLAIN, 4,  Scalar::all(255), 5);
+        else if (bestIdx == 2) 
+            putText(src, "Match=C", Point2f(20,50), FONT_HERSHEY_PLAIN, 4,  Scalar::all(255), 5);
+        else if (bestIdx == 3) 
+            putText(src, "Match=D", Point2f(20,50), FONT_HERSHEY_PLAIN, 4,  Scalar::all(255), 5);
+
+        
+        Mat left;
+        cvtColor(src, left, COLOR_GRAY2BGR);
+        Mat newImg = merge(left, original);
+        show("Result", newImg);
+
+        /*
+        char str[200];
+        sprintf(str, "demo/frame_%06d.png", fnum); 
+        imwrite(str, newImg); 
         */
-        waitKey(200); 
-
+        int key = 0xff & waitKey(250); 
+        
+        switch(key) {
+            /*case 'a': writeToFile(fp, "a", fourier); break;
+            case 'b': writeToFile(fp, "b", fourier); break;
+            case 'c': writeToFile(fp, "c", fourier); break;
+            case 'd': writeToFile(fp, "d", fourier); break;
+            */
+            case 27: loop = false; 
+            default: break;
+        }
+       
    }
-
+  
+   //fp.close(); 
    return 0;
+}
+
+vector<vector<vector<Point> > > loadTemplates()
+{
+    vector<string> templates = {"a.csv", "b.csv", "c.csv", "d.csv"};
+    vector<vector<vector<Point> > >  all_contours;
+
+    for (int j = 0; j < templates.size(); j++) {
+        ifstream ifp(templates[j]);
+        vector<vector<Point> > sContour;
+        string label;
+       
+        if(ifp.is_open()) {
+
+            for(;;) {
+                vector<string> reference = getNextLineAndSplitIntoTokens(ifp);    
+                vector<Point> contour;
+                if (reference.size() > 0) {
+                    label = reference[reference.size()-1]; 
+                    for(int i = 0; i < reference.size()-2; i+=2)
+                    {
+                        contour.push_back(Point(std::stoi(reference[i]), std::stoi(reference[i+1]))); 
+                    }
+                    sContour.push_back(contour);
+                } else {
+                    break;
+                }
+            }
+        }
+
+        all_contours.push_back(sContour);
+        ifp.close(); 
+    }
+
+    return all_contours;
 }
 
 void findHand(Mat &src, vector<Point> &fourier) {
@@ -99,109 +194,20 @@ void findHand(Mat &src, vector<Point> &fourier) {
     Mat result = postprocess(hsv, equ, cluster_inv, shape);
 
     myFourier(shape, fourier);
+
+#ifdef debug
     for(int i = 0; i < fourier.size(); i++) 
         circle(src, fourier[i], 10, Scalar::all(255), -1, 8, 0);
     show("Fourier", src);
-
-    //print("Fourier points = %d", fourier.size());
+#endif 
 
     src = result;
 }
 
-void fourierDescriptor(Mat &I)
-{
-    Mat padded;                            //expand input image to optimal size
-    int m = getOptimalDFTSize( I.rows );
-    int n = getOptimalDFTSize( I.cols ); // on the border add zero values
-    copyMakeBorder(I, padded, 0, m - I.rows, 0, n - I.cols, BORDER_CONSTANT, Scalar::all(0));
-
-    Mat planes[] = {Mat_<float>(padded), Mat::zeros(padded.size(), CV_32F)};
-    Mat complexI;
-    merge(planes, 2, complexI);         // Add to the expanded another plane with zeros
-
-    dft(complexI, complexI);            // this way the result may fit in the source matrix
-
-    // compute the magnitude and switch to logarithmic scale
-    // => log(1 + sqrt(Re(DFT(I))^2 + Im(DFT(I))^2))
-    split(complexI, planes);                   // planes[0] = Re(DFT(I), planes[1] = Im(DFT(I))
-    magnitude(planes[0], planes[1], planes[0]);// planes[0] = magnitude
-    Mat magI = planes[0];
-
-    magI += Scalar::all(1);                    // switch to logarithmic scale
-    log(magI, magI);
-
-    // crop the spectrum, if it has an odd number of rows or columns
-    magI = magI(Rect(0, 0, magI.cols & -2, magI.rows & -2));
-
-    // rearrange the quadrants of Fourier image  so that the origin is at the image center
-    int cx = magI.cols/2;
-    int cy = magI.rows/2;
-
-    Mat q0(magI, Rect(0, 0, cx, cy));   // Top-Left - Create a ROI per quadrant
-    Mat q1(magI, Rect(cx, 0, cx, cy));  // Top-Right
-    Mat q2(magI, Rect(0, cy, cx, cy));  // Bottom-Left
-    Mat q3(magI, Rect(cx, cy, cx, cy)); // Bottom-Right
-
-    Mat tmp;                           // swap quadrants (Top-Left with Bottom-Right)
-    q0.copyTo(tmp);
-    q3.copyTo(q0);
-    tmp.copyTo(q3);
-
-    q1.copyTo(tmp);                    // swap quadrant (Top-Right with Bottom-Left)
-    q2.copyTo(q1);
-    tmp.copyTo(q2);
-
-    normalize(magI, magI, 0, 1, CV_MINMAX); // Transform the matrix with float values into a
-                                            // viewable image form (float between values 0 and 1).
-
-    show("Input Image"       , I   );    // Show the result
-    show("spectrum magnitude", magI);
-}
-
-void print(const char* format, ... ) {
-#ifdef debug
-    va_list args;  
-    
-    char buff[100]; //Buffer for the time
-    
-    time_t now = time (0); //Get current time object
-    
-    //Format time object into string using the format provided
-    strftime(buff, 100, "%Y-%m-%d %H:%M:%S", localtime (&now)); 
-    
-    //Print time to the screen
-    printf ("%s: ", buff);
-
-    //Based on format, read in args from (...)
-    va_start(args, format);
-    
-    //Fill-in format with args and print to screen
-    vprintf(format, args);
-
-    //Release args memory
-    va_end(args);
-
-    //Create a newline
-    printf("\n");
-
-    //Flush standard out to make sure this gets printed
-    fflush(stdout);
-#endif
-}
-
-void show(const char *name, Mat &img)
-{
-#ifdef debug
-    namedWindow( name, 0 );
-    imshow( name, img );
-    resizeWindow(name, 800, 600);
-#endif
-}
-
 int cluster(Mat &hsv, Mat &mask, Mat &cluster0, Mat &cluster1) {
 
-    //int hbins = 30, sbins = 32;
-    int hbins = 20, sbins = 16;
+    int hbins = 30, sbins = 32;
+    //int hbins = 20, sbins = 16;
     int hBinSize = 180 / hbins;
     int sBinSize = 256 / sbins;
     int histSize[] = {hbins, sbins};
@@ -210,7 +216,7 @@ int cluster(Mat &hsv, Mat &mask, Mat &cluster0, Mat &cluster1) {
     float sranges[] = { 0, 256 };
     const float* ranges[] = { hranges, sranges };
     MatND hist;
-    int channels[] = {0, 1};  //hue, value
+    int channels[] = {0, 1};  //hue, saturation 
 
     calcHist( &hsv, 1, channels, Mat(), // Mat() do not use mask
              hist, 2, histSize, ranges,
@@ -271,21 +277,19 @@ int cluster(Mat &hsv, Mat &mask, Mat &cluster0, Mat &cluster1) {
         }
     }
 
+    cout << centers << endl;
 
     Point2f a(centers.at<float>(0,0), centers.at<float>(0,1));
     Point2f b(centers.at<float>(1,0), centers.at<float>(1,1));
     double res = norm(a-b);
-
-    //print("Label 0 = %d", sum);
-    //print("Label 1 = %d", (labels.rows - sum));
-
-    /*
     print("Diff = %d", res);
-    if (res < 10) {
+    print("Label 0 = %d", sum);
+    print("Label 1 = %d", (labels.rows - sum));
+
+    if (res < 3) {
         bitwise_or(cluster0, cluster1, cluster0);
         return 0;
     }
-    */
 
     int bestCluster = -1;
     if (sum > (labels.rows - sum)) {
@@ -355,8 +359,8 @@ Mat find_edges(Mat &gray)
 
 Mat postprocess(Mat &hsv, Mat &gray, Mat &mask, vector<Point> &shape) 
 {
-    Mat edges = find_edges(mask);
-    show("Canny", edges); 
+    //Mat edges = find_edges(mask);
+    //show("Canny", edges); 
     
     vector<vector<Point> > contours;
     vector<Vec4i> hierarchy;
@@ -380,50 +384,6 @@ Mat postprocess(Mat &hsv, Mat &gray, Mat &mask, vector<Point> &shape)
     return drawing;
 }
 
-Mat getFourierDescriptor( vector<Point> &points/*, Mat &mask*/)
-{
-
-   
-    /* 
-    std::vector<Point> interpolated(data, data + sizeof(data) / sizeof(double));
-    std::vector<Point> fft;
-
-    cv::dft(interpolated, fft);
-    */
-
-    /*    
-    Mat p_complex = Mat::zeros(points.size()).astype(complex); 
-    for (int i = 0; i < points.size(); i++) {
-        Point p = points.at<Point>(i);
-        p_complex.at<complex>(i).real = p.x;
-        p_complex.at<complex>(i).imag = p.y;
-    }
-    */
-    
-    //All x coordinates are real
-    //All y coordinates are imaginary
-    Mat fourierTransform;
-    
-    //Mat hand = Mat(points);
-    //hand.convertTo(hand, CV_32FC2);
-    //dft(hand, fourierTransform, DFT_SCALE|DFT_COMPLEX_OUTPUT);
-   
-    /* 
-    int sum = 0;
-    for(int i = 0; i < fourierTransform.rows; i++)
-    {
-        for(int j = 0; j < fourierTransform.cols; j++) {
-            const int* FFT = fourierTransform.ptr<int>(i, j);
-            cout << FFT[0] << "," << FFT[1] << endl;
-        }
-    }
-   
-    double center = points.size() / 2.0;
-    float left = (center_index - 18) / 2;
-    float right = (center_index + 18) / 2;
-    */
-    return fourierTransform;
-}
 
 /************************** Fourier code *********************************************/
 
@@ -677,6 +637,23 @@ vector<Point2d> ReSampleContour(vector<Point> &c, int nbElt)
     return r;
 }
 
+std::vector<std::string> getNextLineAndSplitIntoTokens(std::istream& str)
+{
+    std::vector<std::string>   result;
+    std::string                line;
+    std::getline(str,line);
+
+    std::stringstream          lineStream(line);
+    std::string                cell;
+
+    while(std::getline(lineStream,cell, ','))
+    {
+        result.push_back(cell);
+    }
+    
+    return result;
+}
+
 void myFourier(vector<Point> &contours, vector<Point> &fourier)
 {
     
@@ -691,16 +668,33 @@ void myFourier(vector<Point> &contours, vector<Point> &fourier)
    
     MatchDescriptor md;
 
+    /*
+    ifstream fp("a.csv");
+    vector<string> reference = getNextLineAndSplitIntoTokens(fp);    
+    vector<Point2d> sContour;
+    for(int i = 0; i < reference.size()-2; i+=2)
+    {
+        sContour.push_back(Point(std::stoi(reference[i]), std::stoi(reference[i+1]))); 
+    }
+    f.close(); 
+    vector<Point2d> zref;
+    vector<Point2d> Zref;
+    for (int j=0;j<sContour.size();j++)
+        zref.push_back(sContour[(j*10)%sContour.size()]);
+    dft(zref,Zref,DFT_SCALE|DFT_REAL_OUTPUT);
+     
+    */
     //This would be the reference contour    
-    md.sContour=Z;
+    md.sContour=Z; //Zref;
     md.nbDesFit=20;
     float alpha,phi,s;
 
     md.AjustementRtSafe(Z,alpha,phi,s);
-    
     complex<float> expitheta=s*complex<float>(cos(phi), sin(phi));
+    cout<<"Fourier distance " << md.Distance(expitheta,alpha) << endl;
     for (int j=1;j<Z.size();j++)
     {
+        //complex<float> zr(Zref[j].x,Zref[j].y);
         complex<float> zr(Z[j].x,Z[j].y);
         zr= zr*expitheta*exp(alpha*md.frequence[j]*complex<float>(0,1));
         Z[j].x = zr.real();
@@ -710,15 +704,12 @@ void myFourier(vector<Point> &contours, vector<Point> &fourier)
     for (int j = 0; j<z.size();j++)
         fourier.push_back(Point(z[j].x, z[j].y));
   
-    /* 
-    Mat mc=Mat::zeros(result.size(),CV_8UC3);
-    Point baricenter(0,0);
-    for( int i = 0; i < ctrRotated.size(); i++ )
-        baricenter += ctrRotated[i];
-    baricenter.x /= ctrRotated.size();
-    baricenter.y /= ctrRotated.size();
-    std::sort(ctrRotated.begin()+4, ctrRotated.end(),[baricenter](Point i, Point j){ return myLess(i,j,baricenter); });
-    */
+    Point center(0,0);
+    for( int i = 0; i < fourier.size(); i++ )
+        center += fourier[i];
+    center.x /= fourier.size();
+    center.y /= fourier.size();
+    std::sort(fourier.begin()+4, fourier.end(),[center](Point i, Point j){ return myLess(i,j,center); });
 }
 
 bool myLess(Point a, Point b, Point center)
@@ -747,3 +738,69 @@ bool myLess(Point a, Point b, Point center)
     return d1 > d2;
 }
 
+
+/*************************DEBUG FUNCTIONS**********************************************************************/
+
+void writeToFile(fstream &fp, const char* label, vector<Point> &fourier)
+{
+#ifdef debug
+    for(int i = 0; i < fourier.size(); i++)
+    {
+        Point p = fourier[i];
+        fp << p.x << "," << p.y << ",";
+    }
+    fp << label << "\n"; 
+#endif
+}
+
+void print(const char* format, ... ) {
+#ifdef debug
+    va_list args;  
+    
+    char buff[100]; //Buffer for the time
+    
+    time_t now = time (0); //Get current time object
+    
+    //Format time object into string using the format provided
+    strftime(buff, 100, "%Y-%m-%d %H:%M:%S", localtime (&now)); 
+    
+    //Print time to the screen
+    printf ("%s: ", buff);
+
+    //Based on format, read in args from (...)
+    va_start(args, format);
+    
+    //Fill-in format with args and print to screen
+    vprintf(format, args);
+
+    //Release args memory
+    va_end(args);
+
+    //Create a newline
+    printf("\n");
+
+    //Flush standard out to make sure this gets printed
+    fflush(stdout);
+#endif
+}
+
+void show(const char *name, Mat &img)
+{
+#ifdef debug
+    namedWindow( name, 0 );
+    imshow( name, img );
+    resizeWindow(name, 800, 600);
+#endif
+}
+
+Mat merge(Mat &img1, Mat &img2)
+{
+    Size sz1 = img1.size();
+    Size sz2 = img2.size();
+    Mat img3(sz1.height, sz1.width+sz2.width, CV_8UC3);
+    Mat left(img3, Rect(0, 0, sz1.width, sz1.height));
+    img1.copyTo(left);
+    Mat right(img3, Rect(sz1.width, 0, sz2.width, sz2.height));
+    img2.copyTo(right);
+    return img3;    
+} 
