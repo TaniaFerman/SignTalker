@@ -24,6 +24,8 @@ using namespace std;
 
 extern "C" {
 
+void logTxt(const char *txt);
+
 Mat skinFilter(const Mat& src, Scalar lower, Scalar upper);
 void preprocess( Mat src, Mat &dst, Mat &mask );
 int cluster(Mat &hsv, Mat &mask, Mat &cluster0, Mat &cluster1);
@@ -31,12 +33,14 @@ Mat postprocess(Mat &hsv, Mat &gray, Mat &mask, vector<Point> &shape);
 Mat find_edges(Mat &gray);
 void show(const char *name, Mat &img);
 
-Mat getFourierDescriptor( vector<Point> &points);
+void findHand(Mat &src, vector<Point> &points);
 
-void findHand(Mat &src);
+/* Fourier prototypes */
+
+void myFourier(vector<Point> &contours, vector<Point> &fourier);
+bool myLess(Point a, Point b, Point center);
 
 
-void logTxt(const char *txt);
 
 JNIEXPORT jboolean JNICALL
 Java_com_example_danyalejandro_trywithndk_MainActivity_nativeFunction(JNIEnv *env, jobject instance, long iAddr) {
@@ -47,7 +51,9 @@ Java_com_example_danyalejandro_trywithndk_MainActivity_nativeFunction(JNIEnv *en
 
     // Amanda's magic
     logTxt("hola mundo!");
-    findHand(*src);
+    
+    vector<Point> fourier;
+    findHand(*src, *fourier);
 
 
     //Mat imgt = img->t();
@@ -62,7 +68,8 @@ void logTxt(const char *txt) {
     __android_log_write(ANDROID_LOG_ERROR, "MyLogs", txt);
 }
 
-void findHand(Mat &src) {
+/* Amanda's code */
+void findHand(Mat &src, vector<Point> &fourier) {
     Mat equ, hsv, mask;
     
     preprocess(src, equ, mask);
@@ -86,7 +93,12 @@ void findHand(Mat &src) {
     vector<Point> shape;
     Mat result = postprocess(hsv, equ, cluster_inv, shape);
 
-    getFourierDescriptor(shape); 
+    myFourier(shape, fourier);
+    for(int i = 0; i < fourier.size(); i++) 
+        circle(src, fourier[i], 10, Scalar::all(255), -1, 8, 0);
+    show("Fourier", src);
+
+    //print("Fourier points = %d", fourier.size());
 
     src = result;
 }
@@ -207,12 +219,12 @@ int cluster(Mat &hsv, Mat &mask, Mat &cluster0, Mat &cluster1) {
 
     Point2f a(centers.at<float>(0,0), centers.at<float>(0,1));
     Point2f b(centers.at<float>(1,0), centers.at<float>(1,1));
+    double res = norm(a-b);
 
     //print("Label 0 = %d", sum);
     //print("Label 1 = %d", (labels.rows - sum));
 
     /*
-    double res = norm(a-b);
     print("Diff = %d", res);
     if (res < 10) {
         bitwise_or(cluster0, cluster1, cluster0);
@@ -313,24 +325,327 @@ Mat postprocess(Mat &hsv, Mat &gray, Mat &mask, vector<Point> &shape)
     return drawing;
 }
 
-Mat getFourierDescriptor( vector<Point> &points)
+
+/************************** Fourier code *********************************************/
+
+class MatchDescriptor {
+public :
+    vector<Point2d> sContour;
+    vector<complex<float> > b;
+    vector<complex<float> > a;
+    vector<float> frequence;
+    vector<float> rho,psi;
+    double pi;
+    int nbDesFit;
+
+public :
+    MatchDescriptor(){nbDesFit=7;pi=acos(-1.0);};;
+    float AjustementRtSafe(vector<Point2d> &c,float &alphaMin,float &phiMin,float &sMin);
+    float Ajustement(vector<Point2d> &c,float &alphaMin,float &phiMin,float &sMin);
+    void falpha(float x,float *fn,float *df);
+    void InitFrequence();
+    float rtsafe(float x1,float x2,float xacc);
+    float Distance(complex<float> r,float alpha)
+    {
+    long			i;
+    complex<float>		j(0,1);
+    float 		d=0;
+
+    for (i=1;i<=nbDesFit;i++)
+    {
+        d += abs(a[i]-b[i]*r*exp(j*float(alpha*frequence[i])))+ abs(a[a.size()-i]-b[a.size()-i]*r*exp(j*float(alpha*frequence[a.size()-i])));
+    }
+    return d;
+    };
+   
+};
+
+void MatchDescriptor::InitFrequence()
 {
-    /*
-    p_complex = np.empty(points.shape[:-1], dtype=complex)
-    p_complex.real = points[:, 0]
-    p_complex.imag = points[:, 1]
+    long i;
+    int nbElt=sContour.size();
+    frequence.resize(sContour.size());
+
+    for (i=0;i<=nbElt/2;i++)
+        frequence[i] = 2*pi*(float)i/nbElt;
+    for (i=nbElt/2+1;i<nbElt;i++)
+        frequence[i] = 2*pi*(float)(i-nbElt)/nbElt;
+}
+
+
+void MatchDescriptor::falpha(float x,float *fn,float *df)
+{
+    long 	n,nbElt = sContour.size();
+    float	s1=0,s2=0,s3=0,s4=0;
+    float	ds1=0,ds2=0,ds3=0,ds4=0;
+
+    for (n=1;n<=nbDesFit;n++)
+        {
+        s1 += 	rho[n] * sin(psi[n]+frequence[n]*x) + 
+                rho[nbElt-n] * sin(psi[nbElt-n]+frequence[nbElt-n]*x);
+        s2 += 	frequence[n] * rho[n] * cos(psi[n]+frequence[n]*x) +
+                frequence[nbElt-n] * rho[nbElt-n] * cos(psi[nbElt-n]+frequence[nbElt-n]*x);
+        s3 += 	rho[n] * cos(psi[n]+frequence[n]*x) +
+                rho[nbElt-n] * cos(psi[nbElt-n]+frequence[nbElt-n]*x);
+        s4 += 	frequence[n] * rho[n] * sin(psi[n]+frequence[n]*x) +
+                frequence[nbElt-n] * rho[nbElt-n] * sin(psi[nbElt-n]+frequence[nbElt-n]*x);
+        ds1 += 	frequence[n]*rho[n] * cos(psi[n]+frequence[n]*x) +
+                frequence[nbElt-n]*rho[nbElt-n] * cos(psi[nbElt-n]+frequence[nbElt-n]*x);
+        ds2 += 	-frequence[n]*frequence[n] * rho[n] * sin(psi[n]+frequence[n]*x) - 
+                frequence[nbElt-n]*frequence[nbElt-n] * rho[nbElt-n] * sin(psi[nbElt-n]+frequence[nbElt-n]*x);
+        ds3 += 	-frequence[n]*rho[n] * sin(psi[n]+frequence[n]*x) -
+                frequence[nbElt-n]*rho[nbElt-n] * sin(psi[nbElt-n]+frequence[nbElt-n]*x);
+        ds4 += 	frequence[n]*frequence[n] * rho[n] * cos(psi[n]+frequence[n]*x) +
+                frequence[nbElt-n]*frequence[nbElt-n] * rho[nbElt-n] * cos(psi[nbElt-n]+frequence[nbElt-n]*x);
+        }
+    *fn = s1 * s2 - s3 *s4;
+    *df = ds1 * s2 + s1 * ds2 - ds3 * s4 -  s3 * ds4;
+}
+
+float MatchDescriptor::AjustementRtSafe(vector<Point2d> &c,float &alphaMin,float &phiMin,float &sMin)
+{
+    long		    n,nbElt = sContour.size();
+    float 		    s1,s2,sign1,sign2,df,x1=nbElt,x2=nbElt,dx;
+    float		    dist,distMin = 10000,alpha,s,phi;
+    complex<float> 	j(0,1),zz;
+
+    InitFrequence();
+    rho.resize(nbElt);
+    psi.resize(nbElt);
+
+    b.resize(nbElt);
+    a.resize(nbElt);
+    
+    if (nbElt!=c.size())
+        return -1;
+    for (n=0;n<nbElt;n++)
+    {
+        b[n] = complex<float>(sContour[n].x,sContour[n].y);
+        a[n]=complex<float>(c[n].x,c[n].y);
+        zz = conj(a[n])*b[n];
+        rho[n] = abs(zz);
+        psi[n] = arg(zz);
+    }
+    float xp=-nbElt,fnp,dfp;
+    falpha(xp,&fnp,&dfp);
+
+    x1=nbElt,x2=nbElt;
+    sMin =1;
+    alphaMin = 0;
+    phiMin = arg(a[1]/b[1]);
+    
+    do 
+    {
+        x2 = x1;
+        falpha(x2,&sign2,&df);
+        dx = 1;
+        x1 = x2;
+        do
+        {
+            x2=x1;
+            x1 -= dx;
+            falpha(x1,&sign1,&df);
+        }
+        while ((sign1*sign2>0)&&(x1>-nbElt));
+        
+        if (sign1*sign2<0)
+        { 
+            alpha = rtsafe(x1,x2,1e-8);
+            falpha(alpha,&sign1,&df);
+            alpha = alpha;
+            s1 = 0;
+            s2 = 0;
+            for (n=1;n<nbElt;n++)
+            {
+                s1 += 	rho[n] * sin(psi[n]+frequence[n]*alpha); 
+                s2 += 	rho[n] * cos(psi[n]+frequence[n]*alpha);
+            }
+            phi = -atan(s1/s2);
+            phi =-atan2(s1,s2);
+            s1 = 0;
+            s2 = 0;
+            
+            for (n = 1; n < nbElt; n++)
+            {
+                s1 += 	rho[n] * cos(psi[n]+frequence[n]*alpha+phi) ; 
+                s2 +=  abs(b[n] * conj(b[n]));
+            }
+            s = s1/s2;
+            zz = s*exp(j*phi);
+            
+            if (s>0)
+                dist = Distance(zz,alpha);
+            else
+                dist = 10000;
+            
+            if (dist<distMin)
+            {
+                distMin = dist;
+                alphaMin = alpha;
+                phiMin = phi;
+                sMin = s;
+            }
+        }
+    }
+    while ((x1>-nbElt));
+    return distMin;
+}
+
+
+#define MAXIT 100
+
+float MatchDescriptor::rtsafe(float x1,float x2,float xacc)
+{
+	long j;
+	float df,dx,dxold,f,fh,fl;
+	float temp,xh,xl,rts;
+
+	falpha(x1,&fl,&df);
+	falpha(x2,&fh,&df);
+	if (fl < 0.0) {
+		xl=x2;
+		xh=x1;
+	} else {
+		xh=x2;
+		xl=x1;
+	}
+	rts=0.5*(x1+x2);
+	dxold=fabs(x2-x1);
+	dx=dxold;
+	falpha(rts,&f,&df);
+	for (j=1;j<=MAXIT;j++) 
+	{
+		if ((((rts-xh)*df-f)*((rts-xl)*df-f) >= 0.0)
+			|| (fabs(2.0*f) > fabs(dxold*df))) 
+		{
+			dxold=dx;
+			dx=0.5*(xh-xl);
+			rts=xl+dx;
+			if (xl == rts) return rts;
+		} 
+		else 
+		{
+			dxold=dx;
+			dx=f/df;
+			temp=rts;
+			rts -= dx;
+			if (temp == rts) 
+				return rts;
+	    }
+		if (fabs(dx) < xacc) 
+			return rts;
+		falpha(rts,&f,&df);
+		if (f < 0.0)
+			xl=rts;
+		else
+			xh=rts;
+		}
+    return 0.0;
+}
+
+
+
+Point2d Echantillon(vector<Point> &c,long i,float l1,float l2,float s)
+{
+    Point2d d = c[(i+1) % c.size()] - c[i % c.size()];
+    Point2d p = Point2d(c[i % c.size()]) + d * (s-l1)/(l2-l1);
+    return p;
+}
+
+
+vector<Point2d> ReSampleContour(vector<Point> &c, int nbElt)
+{
+    long 		nb=c.size();
+    float		l1=0,l2,p,d,s;
+    vector<Point2d> r;
+    int j=0;
+    p = arcLength(c,true);
+
+    l2 = norm(c[j]-c[j+1])/p;
+    for(int i=0;i<nbElt;i++)
+    {
+        s = (float)i/(float)nbElt;
+        while (s>=l2)
+            {
+            j++;
+            l1 = l2;
+            d = norm(c[j % nb]-c[(j+1) % nb]);
+            l2 = l1+d/p;
+            }
+        if ((s>=l1)&&(s<l2))
+            r.push_back( Echantillon(c,j,l1,l2,s));
+    }
+    return r;
+}
+
+void myFourier(vector<Point> &contours, vector<Point> &fourier)
+{
+    
+    int min_descriptors = 64;
+    vector<Point2d>  z;
+    vector<Point2d>  Z;
+
+    vector<Point2d> c = ReSampleContour(contours,min_descriptors);
+    for (int j=0;j<c.size();j++)
+        z.push_back(c[(j*10)%c.size()]);
+    dft(z,Z,DFT_SCALE|DFT_REAL_OUTPUT);
+   
+    MatchDescriptor md;
+
+    //This would be the reference contour    
+    md.sContour=Z;
+    md.nbDesFit=20;
+    float alpha,phi,s;
+
+    md.AjustementRtSafe(Z,alpha,phi,s);
+    
+    complex<float> expitheta=s*complex<float>(cos(phi), sin(phi));
+    for (int j=1;j<Z.size();j++)
+    {
+        complex<float> zr(Z[j].x,Z[j].y);
+        zr= zr*expitheta*exp(alpha*md.frequence[j]*complex<float>(0,1));
+        Z[j].x = zr.real();
+        Z[j].y = zr.imag();
+    }
+    dft(Z,z,DFT_INVERSE);
+    for (int j = 0; j<z.size();j++)
+        fourier.push_back(Point(z[j].x, z[j].y));
+  
+    /* 
+    Mat mc=Mat::zeros(result.size(),CV_8UC3);
+    Point baricenter(0,0);
+    for( int i = 0; i < ctrRotated.size(); i++ )
+        baricenter += ctrRotated[i];
+    baricenter.x /= ctrRotated.size();
+    baricenter.y /= ctrRotated.size();
+    std::sort(ctrRotated.begin()+4, ctrRotated.end(),[baricenter](Point i, Point j){ return myLess(i,j,baricenter); });
     */
-    Mat p_complex = Mat::zeros(points.size()).astype(complex); 
-    for (int i = 0; i < points.size(); i++) {
-        Point p = points.at<Point>(i);
-        p_complex.at<complex>(i) = complex(p.x, p.y);
+}
+
+bool myLess(Point a, Point b, Point center)
+{
+    if (a.x - center.x >= 0 && b.x - center.x < 0)
+        return true;
+    if (a.x - center.x < 0 && b.x - center.x >= 0)
+        return false;
+    if (a.x - center.x == 0 && b.x - center.x == 0) {
+        if (a.y - center.y >= 0 || b.y - center.y >= 0)
+            return a.y > b.y;
+        return b.y > a.y;
     }
 
-    //All x coordinates are real
-    //All y coordinates are imaginary
-    Mat fourierTransform;
-    dft(Mat(points), fourierTransform, DFT_SCALE|DFT_COMPLEX_OUTPUT);
-    return fourierTransform;
+    // compute the cross product of vectors (center -> a) x (center -> b)
+    int det = (a.x - center.x) * (b.y - center.y) - (b.x - center.x) * (a.y - center.y);
+    if (det < 0)
+        return true;
+    if (det > 0)
+        return false;
+
+    // points a and b are on the same line from the center
+    // check which point is closer to the center
+    int d1 = (a.x - center.x) * (a.x - center.x) + (a.y - center.y) * (a.y - center.y);
+    int d2 = (b.x - center.x) * (b.x - center.x) + (b.y - center.y) * (b.y - center.y);
+    return d1 > d2;
 }
 
 
