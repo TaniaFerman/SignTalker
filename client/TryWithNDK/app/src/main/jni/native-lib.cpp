@@ -39,6 +39,7 @@ Mat merge(Mat &img1, Mat &img2);
 vector<vector<vector<Point> > > loadTemplates();
 
 void findHand(Mat &src, vector<Point> &points);
+void matchLetter(vector<vector<vector<Point> > > templates, Mat &src, vector<Point> &fourier);
 
 /* Fourier prototypes */
 
@@ -56,12 +57,23 @@ Java_com_example_danyalejandro_trywithndk_MainActivity_nativeFunction(JNIEnv *en
     //__android_log_write(ANDROID_LOG_ERROR, "MyLogs", (to_string(a)).c_str());
 
     // Amanda's magic
-    vector<vector<vector<Point> > > templates = loadTemplates();
+    //vector<vector<vector<Point> > > templates = loadTemplates();
     
     
     vector<Point> fourier;
     findHand(*src, fourier);
+    matchLetter(templates, *src, fourier); 
 
+    return true;
+}
+
+void logTxt(const char *txt) {
+    __android_log_write(ANDROID_LOG_ERROR, "MyLogs", txt);
+}
+
+void matchLetter(vector<vector<vector<Point> > > templates, Mat &src, vector<Point> &fourier)
+{
+    /* Finding ASL Letter */
     float bestMatch = 1000;
     int bestIdx = -1; 
     for(int j = 0; j < templates.size(); j++) { 
@@ -89,11 +101,6 @@ Java_com_example_danyalejandro_trywithndk_MainActivity_nativeFunction(JNIEnv *en
     else if (bestIdx == 3) 
         putText(src, "Match=D", Point2f(20,50), FONT_HERSHEY_PLAIN, 4,  Scalar::all(255), 5);
 
-    return true;
-}
-
-void logTxt(const char *txt) {
-    __android_log_write(ANDROID_LOG_ERROR, "MyLogs", txt);
 }
 
 /* Amanda's code */
