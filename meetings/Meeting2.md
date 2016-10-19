@@ -37,9 +37,8 @@
   [Game2study](https://docs.google.com/presentation/d/1aLj0N2cIrq-vMdi7pAXCdUXNZKhDUD2VXB9OHxMlqFE/edit?usp=sharing)
   
 
-
 #### Outcome: Game2Study first draft
 
-
+#### [Go back (Main)](https://github.com/TaniaFerman/SignTalker)
 
 

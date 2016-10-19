@@ -42,7 +42,7 @@
 
 #### Outcome: Chosen project idea "Educational Video Game"
 
-#### [Go back(Main)](https://github.com/TaniaFerman/SignTalker)
+#### [Go back (Main)](https://github.com/TaniaFerman/SignTalker)
 
 
 

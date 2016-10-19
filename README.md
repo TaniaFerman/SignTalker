@@ -28,5 +28,18 @@ https://youtu.be/yspqSYtJCss/cc_load_policy=1
 ### Meetings:
 
 -  [Meeting 1](https://github.com/TaniaFerman/SignTalker/blob/master/meetings/Meeting1.md)
+-  [Meeting 2](https://github.com/TaniaFerman/SignTalker/blob/master/meetings/Meeting2.md)
+-  [Meeting 3](https://github.com/TaniaFerman/SignTalker/blob/master/meetings/Meeting3.md)
+-  [Meeting 4](https://github.com/TaniaFerman/SignTalker/blob/master/meetings/Meeting4.md)
+-  [Meeting 5](https://github.com/TaniaFerman/SignTalker/blob/master/meetings/Meeting5.md)
+-  [Meeting 6](https://github.com/TaniaFerman/SignTalker/blob/master/meetings/Meeting6.md)
+-  [Meeting 7](https://github.com/TaniaFerman/SignTalker/blob/master/meetings/Meeting7.md)
+-  [Meeting 8](https://github.com/TaniaFerman/SignTalker/blob/master/meetings/Meeting8.md)
+-  [Meeting 9](https://github.com/TaniaFerman/SignTalker/blob/master/meetings/Meeting9.md)
+-  [Meeting 10](https://github.com/TaniaFerman/SignTalker/blob/master/meetings/Meeting10.md)
 
-### ASL Contact Information:
+### [ASL Contact Information](https://github.com/TaniaFerman/SignTalker/blob/master/docs/findingASLusers.md)
+
+### [ASL Interpreters](https://github.com/TaniaFerman/SignTalker/blob/master/docs/ASLInterpreters.md)
+
+

@@ -19,6 +19,6 @@
 
 #### Outcome: Final SignTalker project proposal and presentation slides
 
-
+#### [Go back (Main)](https://github.com/TaniaFerman/SignTalker)
 
 

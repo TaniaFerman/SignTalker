@@ -37,6 +37,6 @@
 
 #### Outcome: SignTalker description
 
-
+#### [Go back (Main)](https://github.com/TaniaFerman/SignTalker)
 
 
