@@ -24,3 +24,9 @@ https://youtu.be/yspqSYtJCss/cc_load_policy=1
 ### SignTalker contact email:
 
 - SignTalkerASL@gmail.com
+
+### Meetings:
+
+-  [Meeting 1](https://github.com/TaniaFerman/SignTalker/blob/master/meetings/Meeting1.md)
+
+### ASL Contact Information:
