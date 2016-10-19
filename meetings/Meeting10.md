@@ -12,6 +12,10 @@
 
 In this meeting, each team member gives updates about her or his progress. We analyse different ideas for the presentation and demo for our project. We are still having concerns about pivoting our idea to an ASL education tool.
 
+4. Slides link:
+  <br>
+  [SignTalker Milestone 1](https://docs.google.com/presentation/d/1KUM8psWSWNrgpaGsmsGgb5AC9CUCWlXZNr5jAuYpnZk/edit?usp=sharing)
+
 #### Outcome: Presentation and Demo.
 
 #### [Go back (Main)](https://github.com/TaniaFerman/SignTalker)
