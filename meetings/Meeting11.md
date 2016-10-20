@@ -16,6 +16,6 @@ Ms Harnden gave us our first feedback about our tool. Our original idea for the 
 
 Ms Harnden agreed in becoming our first user, and continuing to give us feedback. She also agreed in helping us to find more ASL users.
 
-#### Outcome: Our first ASL user!
+#### Outcome: Our first ASL user! :tada:
 
 #### [Go back (Main)](https://github.com/TaniaFerman/SignTalker)
