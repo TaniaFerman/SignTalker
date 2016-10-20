@@ -38,6 +38,7 @@ https://youtu.be/yspqSYtJCss/cc_load_policy=1
 -  [Meeting 9](https://github.com/TaniaFerman/SignTalker/blob/master/meetings/Meeting9.md)
 -  [Meeting 10](https://github.com/TaniaFerman/SignTalker/blob/master/meetings/Meeting10.md)
 -  [Meeting 11](https://github.com/TaniaFerman/SignTalker/blob/master/meetings/Meeting11.md)
+-  [Meeting 12](https://github.com/TaniaFerman/SignTalker/blob/master/meetings/Meeting12.md)
 
 ### [ASL Contact Information](https://github.com/TaniaFerman/SignTalker/blob/master/docs/findingASLusers.md)
 
