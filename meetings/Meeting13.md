@@ -11,21 +11,27 @@
 
 #### Description: 
 
-Existing language educational tools:
+Existing language educational tools: 
 
-- Duolingo: This mobile tool has a good architecture design and we specifically like the pick your goal section.
-- Memrise: We believe that this mobile application is one of the best educational tools. It has a great UI design, that is effective and entertaining at the same time. Memrise allow data gathering by having users' accounts. When the application has been downloaded, there is a quick tutorial to explain how to use it to new users. By using Memrise, users can learn while they interact with the quiz. The application will show the word and its translation, then a test will be displayed. 
+| | Tool | Remarks |
+| ---:| ---------- | -------------- |
+| 1 | Duolingo: | This mobile tool has a good architecture design and we specifically like the pick your goal section.  |
+| 2 | Memrise: | We believe that this mobile application is one of the best educational tools. It has a great UI design, that is effective and entertaining at the same time. Memrise allow data gathering by having users' accounts. When the application has been downloaded, there is a quick tutorial to explain how to use it to new users. By using Memrise, users can learn while they interact with the quiz. The application will show the word and its translation, then a test will be displayed. |
 
 Existing ASL educational tools:
 
-- ASL Alphabet: This mobile app has a bad UI design. Besides, it shows different language like Chinese in the same screen making it confusing for users. It also has pixelated images and a really bad selection of colors.
-- ASL Fingerspelling alphabet:
-- ASL Fingerspelling:
-- SignLanguage Alphabet Flashcards:
-- Alphabet LIS 3D:
-- Sign Language Keyboard:
-- Hand Sign Language:
-- ASL Alpha:
+| | Tool | Remarks |
+| ---:| ---------- | -------------- |
+| 1 | ASL Alphabet: | This mobile app has a bad UI design. Besides, it shows different language like Chinese in the same screen making it confusing for users. It also has pixelated images and a really bad selection of colors.  |
+| 2 | ASL Fingerspelling alphabet: | This tool allows users to see a flashcard with the letters of the alphabet and the hand gesture. Additionally, the tool spells the letter of each flashcard. However, this tool has a cluttered and unreadable UI. Besides, when a user taps a button sometimes does undesirable operations (bugs). |
+| 3 | ASL Fingerspelling: | The first view of this mobile application shows statistics, which makes the app look monotonous. Besides, the color selection is basically grayscale. Therefore, this app is not appealing for users.  |
+| 4 | Finger Spell: | This tool uses Gamification in its UI design. However, the mobile application sometimes doesn't work properly (bugs). Besides, it uses music that can be disruptive, and the uses of many animations can be repetitive. |
+| 5 | SignLanguage Alphabet Flashcards: | This application has a really bad UI design, the flashcards are too small and it doesn't have labels, therefore it is not evident to users what they need to do. |
+| 6 | Alphabet LIS 3D: | This application is better that the others because it has a 3D hand movement flashcards to show how to sign each letter. The animated 3D flashcard is much clearer and reassuring that static pictures. |
+| 7 | Sign Language Keyboard: | This application has a really bad design, it is very confusing to users. It has a very text-heavy configuration interface. |
+| 8 | Hand Sign Language: | This app targeted primarily for kids. It has a very good gamified test interface, and has an effective use of the music and sounds. However, some buttons don't have a legend, making users feel confuse. Besides the application has some delays. |
+| 9 | ASL Alpha: | This application has a bad UI design, and pixelated images. |
+
 
 #### Outcome: 
 
