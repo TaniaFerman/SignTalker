@@ -1,4 +1,4 @@
-![Alt text](images/signtalkerlogo.png)
+![Alt text](images/SignCoachLogo.png)
 
 ###                   Apache License
 ###                Version 2.0, January 2004

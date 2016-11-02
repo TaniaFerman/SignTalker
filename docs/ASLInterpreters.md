@@ -1,4 +1,4 @@
-![Alt text](images/signtalkerlogo.png)
+![Alt text](images/SignCoachLogo.png)
 
 ##ASL Interpreters.
 
