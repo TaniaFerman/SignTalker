@@ -21,14 +21,21 @@ string sign_cascade_folder = "data/";
 string sign_cascade_name = "/cascade.xml";
 string hand_type = "R";
 
+char loaded_letter = ' '; // Set to the currently loaded cascade file
+
 
 bool checkIfCorrect(Mat &src, char letter) {
 
-	string sign_cascade_fullpath = sign_cascade_folder + string(1, letter) + hand_type + sign_cascade_name;
+	// Load required cascade file for this letter if not already loaded
+	if (loaded_letter != letter) {
+		string sign_cascade_fullpath = sign_cascade_folder + string(1, letter) + hand_type + sign_cascade_name;
 
-	if(!sign_cascade.load(sign_cascade_fullpath)) {
-		__android_log_print(ANDROID_LOG_ERROR, "checkIfCorrect", "Error loading cascade file %s", sign_cascade_fullpath.c_str());
-		return false;
+		if(!sign_cascade.load(sign_cascade_fullpath)) {
+			__android_log_print(ANDROID_LOG_ERROR, "checkIfCorrect", "Error loading cascade file %s", sign_cascade_fullpath.c_str());
+			return false;
+		}
+
+		loaded_letter = letter;
 	}
 
 	vector<Rect> signs;
@@ -40,7 +47,7 @@ bool checkIfCorrect(Mat &src, char letter) {
 	//threshold(gray, bw, 0, 255, CV_THRESH_BINARY | CV_THRESH_OTSU);
 	//adaptiveThreshold(gray, bw, 255, ADAPTIVE_THRESH_GAUSSIAN_C , THRESH_BINARY, 11, 2);
 
-	sign_cascade.detectMultiScale( gray, signs, 1.1, 3, 0|CASCADE_SCALE_IMAGE /*,Size(30,30)*/ );
+	sign_cascade.detectMultiScale( src, signs, 1.1, 3, 0|CASCADE_SCALE_IMAGE /*,Size(30,30)*/ );
 	//sign_cascade.detectMultiScale( bw, signs, 1.1, 3, 0|CASCADE_SCALE_IMAGE /*,Size(30,30)*/ );
 	//sign_cascade.detectMultiScale( src, signs, 1.1, 3, 0|CASCADE_SCALE_IMAGE /*,Size(30,30)*/ );
 
