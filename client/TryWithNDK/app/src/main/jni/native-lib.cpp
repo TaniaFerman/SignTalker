@@ -24,7 +24,7 @@ Java_com_example_danyalejandro_trywithndk_MainActivity_processFrame(JNIEnv *env,
 
 	//cropImage(*src, *dst);
 
-	return checkIfCorrect(*src, 'A');
+	return checkIfCorrect(*src, 'C');
 }
 
 // Assigns values to configuration globals

@@ -1,6 +1,10 @@
 package com.example.danyalejandro.trywithndk;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.SurfaceView;
@@ -19,6 +23,8 @@ import org.opencv.android.OpenCVLoader;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 
+import static android.media.MediaRecorder.VideoSource.CAMERA;
+
 
 public class MainActivity extends AppCompatActivity implements CvCameraViewListener2 {
 	private CameraBridgeViewBase mOpenCvCameraView;
@@ -28,6 +34,35 @@ public class MainActivity extends AppCompatActivity implements CvCameraViewListe
 
 	static {
 		System.loadLibrary("native-lib");
+	}
+
+
+	// Storage Permissions
+	private static final int REQUEST_EXTERNAL_STORAGE = 1;
+	private static String[] PERMISSIONS_STORAGE = {
+			Manifest.permission.READ_EXTERNAL_STORAGE,
+			Manifest.permission.WRITE_EXTERNAL_STORAGE
+	};
+
+	/**
+	 * Checks if the app has permission to write to device storage
+	 *
+	 * If the app does not has permission then the user will be prompted to grant permissions
+	 *
+	 * @param activity
+	 */
+	public void verifyStoragePermissions(Activity activity) {
+		// Check if we have write permission
+		int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+		if (permission != PackageManager.PERMISSION_GRANTED) {
+			// We don't have permission so prompt the user
+			ActivityCompat.requestPermissions(
+					activity,
+					PERMISSIONS_STORAGE,
+					REQUEST_EXTERNAL_STORAGE
+			);
+		}
 	}
 
 
@@ -59,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements CvCameraViewListe
 
 		// OpencvCamera initialization
 		mOpenCvCameraView = (JavaCameraView) findViewById(R.id.show_camera_activity_java_surface_view);
-		mOpenCvCameraView.setCameraIndex(1);
+		mOpenCvCameraView.setCameraIndex(mOpenCvCameraView.CAMERA_ID_FRONT);
 		mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
 		mOpenCvCameraView.setCvCameraViewListener(this);
 	}
@@ -96,7 +131,8 @@ public class MainActivity extends AppCompatActivity implements CvCameraViewListe
 		img = ImageOps.initImage(width, height);
 
 		//initGlobals(FileOps.getStoragePath());
-		initGlobals("/sdcard/");
+		verifyStoragePermissions(this);
+		initGlobals("/sdcard");
 
 		Log.i("onCameraViewStarted", "Initialized mat with " + img.rows() + " x " + img.cols());
 		Log.i("onCameraViewStarted", "Cameraview dims: " + mOpenCvCameraView.getWidth() + " x " + mOpenCvCameraView.getHeight());
@@ -113,9 +149,9 @@ public class MainActivity extends AppCompatActivity implements CvCameraViewListe
 
 		boolean r = processFrame(imgOriginal.getNativeObjAddr(), img.getNativeObjAddr());
 		if (r) {
-			Log.i("onCameraFrame", "This is an A!");
+			Log.i("onCameraFrame", "This is an C!");
 		} else {
-			Log.i("onCameraFrame", "NOT A...");
+			Log.i("onCameraFrame", "NOT C...");
 		}
 		return imgOriginal;
 	}
