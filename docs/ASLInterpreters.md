@@ -1,4 +1,4 @@
-![Alt text](images/signtalkerlogo.png)
+![Alt text](images/SignCoachLogo.png)
 
 ##ASL Interpreters.
 
@@ -13,3 +13,4 @@ This is a list of the ASL Interpreters found in Victoria.
 6. Dawn Sharcott [d_sharcott@shaw.ca]
 7. Hannah Slade [sladehannah@yahoo.ca]
   
+#### [Go back (Main)](https://github.com/TaniaFerman/SignTalker)  

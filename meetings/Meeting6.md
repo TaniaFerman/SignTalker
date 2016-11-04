@@ -1,4 +1,4 @@
-![Alt text](images/signtalkerlogo.png)
+![Alt text](images/SignCoachLogo.png)
 
 ### Meeting 6
 
@@ -16,6 +16,6 @@ As an alternative project. Our tool can be used for teaching ASL. In this case o
 
 #### Outcome: Users description for final project and alternative project.
 
-
+#### [Go back (Main)](https://github.com/TaniaFerman/SignTalker)
 
 

@@ -1,4 +1,4 @@
-![Alt text](images/signtalkerlogo.png)
+![Alt text](images/SignCoachLogo.png)
 
 ### Meeting 4
 
@@ -37,6 +37,6 @@
 
 #### Outcome: SignTalker description
 
-
+#### [Go back (Main)](https://github.com/TaniaFerman/SignTalker)
 
 

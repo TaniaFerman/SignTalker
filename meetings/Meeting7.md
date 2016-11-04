@@ -1,4 +1,4 @@
-![Alt text](images/signtalkerlogo.png)
+![Alt text](images/SignCoachLogo.png)
 
 ### Meeting 7
 
@@ -15,3 +15,5 @@ Meeting with Lundie Russell, Coordinator of interpreting and administration serv
 Ms Russell give us useful information about the Deaf culture and gives us the contact information of Susanne Harnden the Community Outreach Worker for a subsequent meeting with her. 
 
 #### Outcome: First steps for creating our Deaf users' network.
+
+#### [Go back (Main)](https://github.com/TaniaFerman/SignTalker)

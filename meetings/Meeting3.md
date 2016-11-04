@@ -1,4 +1,4 @@
-![Alt text](images/signtalkerlogo.png)
+![Alt text](images/SignCoachLogo.png)
 
 ### Meeting 3
 
@@ -51,6 +51,6 @@
 
 #### Outcome: Getting a stronger idea for Game2study
 
-
+#### [Go back (Main)](https://github.com/TaniaFerman/SignTalker)
 
 

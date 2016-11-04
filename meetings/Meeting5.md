@@ -1,4 +1,4 @@
-![Alt text](images/signtalkerlogo.png)
+![Alt text](images/SignCoachLogo.png)
 
 ### Meeting 5
 
@@ -19,6 +19,6 @@
 
 #### Outcome: Final SignTalker project proposal and presentation slides
 
-
+#### [Go back (Main)](https://github.com/TaniaFerman/SignTalker)
 
 

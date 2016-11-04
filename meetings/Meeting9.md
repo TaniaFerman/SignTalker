@@ -1,4 +1,4 @@
-![Alt text](images/signtalkerlogo.png)
+![Alt text](images/SignCoachLogo.png)
 
 ### Meeting 9
 
@@ -10,6 +10,8 @@
 #### Purpose: Status Update Meetings
 #### Description: 
 
-All the members of our team give updates of their progress in last week, and the challenge that they need to face. After this meeting, we are considering pivoting our idea to create an ASL learning tool due to some technical issues.
+All the members of our team give updates of their progress in last week, and the challenge that they need to face. After this meeting, we are considering pivoting our idea to create an ASL learning tool due to some technical and time issues.
 
 #### Outcome: Continuing to develop our project idea.
+
+#### [Go back (Main)](https://github.com/TaniaFerman/SignTalker)

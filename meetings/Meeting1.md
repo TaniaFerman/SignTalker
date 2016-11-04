@@ -1,4 +1,4 @@
-![Alt text](images/signtalkerlogo.png)
+![Alt text](images/SignCoachLogo.png)
 
 ### Meeting 1
 
@@ -41,6 +41,8 @@
       A mobile application that allows injured people to receive advices from people that had, in the past, the same injury. This application will allow people to give advices and recommend doctors, specials, nonprescription medications and treatments. 
 
 #### Outcome: Chosen project idea "Educational Video Game"
+
+#### [Go back (Main)](https://github.com/TaniaFerman/SignTalker)
 
 
 

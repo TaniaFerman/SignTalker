@@ -1,4 +1,4 @@
-![Alt text](images/signtalkerlogo.png)
+![Alt text](images/SignCoachLogo.png)
 
 ### Meeting 8
 
@@ -15,3 +15,5 @@ All the members of our team give updates of their progress in last week, and the
 - SignTalker email [SignTalkerASL@gmail.com]
 
 #### Outcome: Continuing to develop our project idea.  
+
+#### [Go back (Main)](https://github.com/TaniaFerman/SignTalker)
