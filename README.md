@@ -23,7 +23,7 @@ https://projects.invisionapp.com/share/S49501VVU#/screens/201079137
 
 ### SignCoach contact email:
 
-- SignTalkerASL@gmail.com
+- SignCoachASL@gmail.com
 
 ### Meetings:
 

@@ -9,10 +9,24 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SignTalker</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free coming soon template with jQuery countdown">
+    <meta name="author" content="http://bootstraptaste.com">
+
+    <title>SignCoach</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+     <!-- Bootstrap -->
+    <!-- <link href="assets/css/bootstrap.css" rel="stylesheet"> -->
+    <!-- <link href="assets/css/bootstrap-theme.css" rel="stylesheet"> -->
+    <link href="assets/css/font-awesome.css" rel="stylesheet">
+
+    <!-- siimple style -->
+    <!-- <link href="assets/css/style.css" rel="stylesheet"> -->
 
     <!-- Custom Fonts -->
     <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -44,7 +58,7 @@
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                     <span class="sr-only">Toggle navigation</span> Menu <i class="fa fa-bars"></i>
                 </button>
-                <img src="img/logos/SignTalkerLogo.png" width="161" height="40">
+                <img src="img/logos/SignCoachLogo.png" width="161" height="40">
                 <!--<a class="navbar-brand page-scroll" href="#page-top">Start Bootstrap</a>-->
             </div>
 
@@ -94,13 +108,40 @@
             <div class="row">
                 <div class="col-lg-12 text-center">
                     <h2 class="section-heading">Our idea</h2>
-                    <h3 class="section-subheading text-muted">Please see the video below for a better understanding of our project.</h3>
+                    <!--Countdown-->
+<div class="row">
+                <div class="col-lg-12 text-center">
+                    <!-- <h1>WeBuild</h1> -->
+                    <h3 class="section-subheading text-muted">We're working hard to improve our website, our live demo will ready to launch after</h3>
+                    <div id="countdown"></div>
+                    <!-- <form class="form-inline signup" role="form">
+                      <div class="form-group">
+                        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter your email address">
+                      </div>
+                      <button type="submit" class="btn btn-theme">Get notified!</button>
+                    </form>  -->    
+                </div>      
+</div>
+<!-- <link href="assets/css/style.css" rel="stylesheet"> -->
+<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/jquery.countdown.min.js"></script>
+    <script type="text/javascript">
+      $('#countdown').countdown('2016/11/08', function(event) {
+        // $(this).html(event.strftime('%w weeks %d days <br /> %H:%M:%S'));
+        $(this).html(event.strftime('%d days <br /> %H hours %M minutes %S seconds'));
+      });
+    </script>
+<!--CountdownEnding-->
+
+                    <!-- <h3 class="section-subheading text-muted">Please see the video below for a better understanding of our project.</h3>
                 </div>
             </div>
             <div class="embed-responsive embed-responsive-16by9" >
-<iframe class="embed-responsive-item"  src="https://www.youtube.com/embed/yspqSYtJCss/cc_load_policy=1"></iframe>
+<iframe class="embed-responsive-item"  src="https://www.youtube.com/embed/yspqSYtJCss/cc_load_policy=1"></iframe> -->
 </div>
-           
+
+          
     </section>
  
     <!-- Download Section -->
@@ -123,7 +164,7 @@
                                 <div class="timeline-body">
                                 <h3 class="section-subheading text-muted"></h3>
                                 <h3 class="section-subheading text-muted"></h3>
-                                    <p class="extralarge text-muted"> SignTalker is a mobile app that allows those in the deaf community to have a more dynamic communications with non-deaf people!</p>
+                                    <p class="extralarge text-muted"> SignCoach is a mobile app for learning ASL that allows you to have automatic feedback while you learn in a interactive and fun way!</p>
                                     <h3 class="section-subheading text-muted"></h3>
                                     <h3 class="section-subheading text-muted"></h3>
                                     <a href="#page-top" class="page-scroll btn btn-xl">Download Now!</a>
