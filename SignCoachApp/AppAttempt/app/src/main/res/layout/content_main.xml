@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <Button
+        android:text="@string/learn_button"
+        android:layout_marginBottom="30dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="75dp"
+        android:layout_marginEnd="75dp"
+        android:background="@drawable/custom_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/learn_button"
+        android:layout_marginTop="30dp"
+        android:layout_centerHorizontal="true"
+        android:onClick="learnClick"
+        style="@android:style/Widget.DeviceDefault.Light.Button" />
+    <TextView
+        android:text="@string/welcome_message"
+        android:id="@+id/welcome_message"
+        android:textSize="20sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/learn_button"
+        android:layout_centerHorizontal="true"
+        />
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/hands"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="40dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_above="@id/welcome_message"
+        android:id="@+id/home_logo" />
+</RelativeLayout>

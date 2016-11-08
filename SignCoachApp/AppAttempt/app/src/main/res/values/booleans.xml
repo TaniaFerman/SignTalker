@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <bool name="handed_default">false</bool>
+    <bool name="camera_default">true</bool>
+
+</resources>
