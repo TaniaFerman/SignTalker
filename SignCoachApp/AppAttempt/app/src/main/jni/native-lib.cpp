@@ -13,7 +13,7 @@ extern "C" {
 
 // Process a frame
 JNIEXPORT jboolean JNICALL
-Java_com_example_tristan_appattempt_LearnActivity_processFrame(JNIEnv *env, jobject instance,
+Java_com_danycabrera_signcoach_LearnActivity_processFrame(JNIEnv *env, jobject instance,
 																	jlong iAddr1, jlong iAddr2, jchar c) {
 
 	// Prepare source and destination image pointers
@@ -29,7 +29,7 @@ Java_com_example_tristan_appattempt_LearnActivity_processFrame(JNIEnv *env, jobj
 
 // Assigns values to configuration globals
 JNIEXPORT void JNICALL
-Java_com_example_tristan_appattempt_LearnActivity_initGlobals(JNIEnv *env, jobject instance,
+Java_com_danycabrera_signcoach_MainActivity_initGlobals(JNIEnv *env, jobject instance,
 																   jstring externalStoragePath) {
 
 	sign_cascade_folder = jstring2string(env, externalStoragePath) + "/signcoach/data/";
