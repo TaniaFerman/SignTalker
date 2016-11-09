@@ -25,22 +25,6 @@ https://projects.invisionapp.com/share/S49501VVU#/screens/201079137
 
 - SignCoachASL@gmail.com
 
-### Meetings:
-
--  [Meeting 1](https://github.com/TaniaFerman/SignTalker/blob/master/meetings/Meeting1.md)
--  [Meeting 2](https://github.com/TaniaFerman/SignTalker/blob/master/meetings/Meeting2.md)
--  [Meeting 3](https://github.com/TaniaFerman/SignTalker/blob/master/meetings/Meeting3.md)
--  [Meeting 4](https://github.com/TaniaFerman/SignTalker/blob/master/meetings/Meeting4.md)
--  [Meeting 5](https://github.com/TaniaFerman/SignTalker/blob/master/meetings/Meeting5.md)
--  [Meeting 6](https://github.com/TaniaFerman/SignTalker/blob/master/meetings/Meeting6.md)
--  [Meeting 7](https://github.com/TaniaFerman/SignTalker/blob/master/meetings/Meeting7.md)
--  [Meeting 8](https://github.com/TaniaFerman/SignTalker/blob/master/meetings/Meeting8.md)
--  [Meeting 9](https://github.com/TaniaFerman/SignTalker/blob/master/meetings/Meeting9.md)
--  [Meeting 10](https://github.com/TaniaFerman/SignTalker/blob/master/meetings/Meeting10.md)
--  [Meeting 11](https://github.com/TaniaFerman/SignTalker/blob/master/meetings/Meeting11.md)
--  [Meeting 12](https://github.com/TaniaFerman/SignTalker/blob/master/meetings/Meeting12.md)
--  [Meeting 13](https://github.com/TaniaFerman/SignTalker/blob/master/meetings/Meeting13.md)
-
 
 ### [ASL Contact Information](https://github.com/TaniaFerman/SignTalker/blob/master/docs/findingASLusers.md)
 
