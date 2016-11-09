@@ -11,7 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import com.example.tristan.appattempt.R;
+import com.danycabrera.signcoach.R;
 import android.util.Log;
 
 import java.lang.Boolean;

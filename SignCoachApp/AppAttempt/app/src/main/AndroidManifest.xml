@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.tristan.appattempt">
+    package="com.danycabrera.signcoach">
 
     <supports-screens
         android:anyDensity="true"
@@ -48,7 +48,7 @@
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.tristan.appattempt.MainActivity" />
+                android:value="com.danycabrera.signcoach.MainActivity" />
         </activity>
 
     </application>
