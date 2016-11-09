@@ -25,12 +25,12 @@ string sign_cascade_ext = ".xml";
 string hand_type = "R";
 
 Mat fgMask; 
-Ptr<BackgroundSubtractor> pMOG2; 
-pMOG2 = createBackgroundSubtractorMOG2();
+Ptr<BackgroundSubtractor> pMOG2 = createBackgroundSubtractorMOG2();
 //pMOG2 = bgsegm::createBackgroundSubtractorMOG(); 
 
 char loaded_letter = ' '; // Set to the currently loaded cascade file
-
+void rot90(Mat &src, int flag);
+void fixRotation(Mat &src, Mat &dst, int rotation);
 
 bool checkIfCorrect(Mat &src, char letter) {
 
