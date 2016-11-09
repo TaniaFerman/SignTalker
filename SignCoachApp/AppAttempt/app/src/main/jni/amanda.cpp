@@ -2,7 +2,8 @@
 #include "opencv2/imgcodecs.hpp"
 #include <opencv2/core/core.hpp>
 #include <opencv2/objdetect.hpp>
-#include "opencv2/bgsegm.hpp"
+//#include "opencv2/bgsegm.hpp"
+#include <opencv2/video.hpp>
 
 #include <iostream>
 #include  <vector>
@@ -25,7 +26,8 @@ string hand_type = "R";
 
 Mat fgMask; 
 Ptr<BackgroundSubtractor> pMOG2; 
-pMOG2 = bgsegm::createBackgroundSubtractorMOG(); 
+pMOG2 = createBackgroundSubtractorMOG2();
+//pMOG2 = bgsegm::createBackgroundSubtractorMOG(); 
 
 char loaded_letter = ' '; // Set to the currently loaded cascade file
 
@@ -95,6 +97,28 @@ bool checkIfCorrect(Mat &src, char letter) {
     */
 
 	return false;
+}
+
+void fixRotation(Mat &src, Mat &dst, int rotation) {
+    Size sz = src.size();
+    rot90(src, rotation);
+    //copyMakeBorder( src, dst, top, bottom, left, right, borderType, value );
+    resize(src,dst,sz);
+}
+
+void rot90(Mat &src, int flag){
+  //1=CW, 2=CCW, 3=180
+  if (flag == 1){
+    transpose(src, src);  
+    flip(src, src,1); 
+  } else if (flag == 2) {
+    transpose(src, src);  
+    flip(src, src,0); 
+  } else if (flag ==3){
+    flip(src, src,-1);    
+  } else if (flag != 0){ 
+    cout  << "Unknown rotation flag(" << flag << ")" << endl;
+  }
 }
 
 
