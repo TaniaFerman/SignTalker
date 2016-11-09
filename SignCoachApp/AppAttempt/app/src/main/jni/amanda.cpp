@@ -2,6 +2,7 @@
 #include "opencv2/imgcodecs.hpp"
 #include <opencv2/core/core.hpp>
 #include <opencv2/objdetect.hpp>
+#include "opencv2/bgsegm.hpp"
 
 #include <iostream>
 #include  <vector>
@@ -18,8 +19,13 @@ cv::Mat merge(cv::Mat &img1, cv::Mat &img2);
 
 CascadeClassifier sign_cascade;
 string sign_cascade_folder = "data/";
-string sign_cascade_name = "/cascade.xml";
+//string sign_cascade_name = "/cascade.xml";
+string sign_cascade_ext = ".xml";
 string hand_type = "R";
+
+Mat fgMask; 
+Ptr<BackgroundSubtractor> pMOG2; 
+pMOG2 = bgsegm::createBackgroundSubtractorMOG(); 
 
 char loaded_letter = ' '; // Set to the currently loaded cascade file
 
@@ -28,7 +34,8 @@ bool checkIfCorrect(Mat &src, char letter) {
 
 	// Load required cascade file for this letter if not already loaded
 	if (loaded_letter != letter) {
-		string sign_cascade_fullpath = sign_cascade_folder + string(1, letter) + hand_type + sign_cascade_name;
+		//string sign_cascade_fullpath = sign_cascade_folder + string(1, letter) + hand_type + sign_cascade_name;
+		string sign_cascade_fullpath = sign_cascade_folder + string(1, letter) + sign_cascade_ext;
 
 		if(!sign_cascade.load(sign_cascade_fullpath)) {
 			__android_log_print(ANDROID_LOG_ERROR, "checkIfCorrect", "Error loading cascade file %s", sign_cascade_fullpath.c_str());
@@ -37,35 +44,55 @@ bool checkIfCorrect(Mat &src, char letter) {
 
 		loaded_letter = letter;
 	}
+    
+    pMOG2->apply(src, fgMask, 0.3);
 
 	vector<Rect> signs;
-	Mat gray, bw;
-
+	
+    /*
+    Mat gray;
 	cvtColor( src, gray, COLOR_BGR2GRAY );
 	equalizeHist( gray, gray );
+	sign_cascade.detectMultiScale( src, signs, 1.1, 3, 0|CASCADE_SCALE_IMAGE ,Size(150,150) );
+    */
+    
+    sign_cascade.detectMultiScale( fgMask, signs, 1.1, 3, 0|CASCADE_SCALE_IMAGE ,Size(150,150) );
+    Point center(src.cols / 2, src.rows / 2);
 
-	//threshold(gray, bw, 0, 255, CV_THRESH_BINARY | CV_THRESH_OTSU);
-	//adaptiveThreshold(gray, bw, 255, ADAPTIVE_THRESH_GAUSSIAN_C , THRESH_BINARY, 11, 2);
-
-	sign_cascade.detectMultiScale( src, signs, 1.1, 3, 0|CASCADE_SCALE_IMAGE /*,Size(30,30)*/ );
-	//sign_cascade.detectMultiScale( bw, signs, 1.1, 3, 0|CASCADE_SCALE_IMAGE /*,Size(30,30)*/ );
-	//sign_cascade.detectMultiScale( src, signs, 1.1, 3, 0|CASCADE_SCALE_IMAGE /*,Size(30,30)*/ );
-
-
-	/* For testing */
+    int minIdx = -1;
+    float minDist = src.cols*src.rows;
+    float maxArea = 0;
 	for( int i = 0; i < signs.size(); i++ )
 	{
-		rectangle( src, signs[i].tl(), signs[i].br(), Scalar(0,0,255) , 3, 8, 0 );
+        Rect r = signs[i];
+        Point p(r.x + r.width/2,  r.y+r.height/2);
+        
+        float count = countNonZero(Mat(fgMask, r)); 
+        float res = cv::norm(center-p);
+        
+        if (count > maxArea && res < minDist  && r.contains(center)) {
+            minIdx = i;
+            minDist = res;
+            maxArea = count;
+        }
+		
+        //rectangle( src, signs[i].tl(), signs[i].br(), Scalar(0,0,255) , 3, 8, 0 );
 	}
-
+    
+    if (minIdx > -1) { 
+        rectangle( src, signs[minIdx].tl(), signs[minIdx].br(), Scalar(0,0,255), 3, 8, 0 );
+        return true;
+    }
+    
+    /*
 	Mat left;
 	cvtColor(gray, left, COLOR_GRAY2BGR);
 	Mat img = merge(left,src);
 	show("Result", img);
-	/* end testing */
 
 	sign_cascade.empty();
 	if (signs.size() > 0) return true;
+    */
 
 	return false;
 }
