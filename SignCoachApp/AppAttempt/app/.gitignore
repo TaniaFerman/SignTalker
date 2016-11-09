@@ -1,0 +1,4 @@
+/build
+/build.gradle
+/src/main/jni/Android.mk
+

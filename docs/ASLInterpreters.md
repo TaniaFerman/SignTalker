@@ -1,4 +1,4 @@
-![Alt text](images/SignCoachLogo.png)
+![Alt text](../html/images/SignCoachLogo.png)
 
 ##ASL Interpreters.
 
