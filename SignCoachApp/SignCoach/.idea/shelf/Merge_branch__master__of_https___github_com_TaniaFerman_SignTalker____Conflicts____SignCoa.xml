@@ -1,0 +1,54 @@
+<changelist name="Merge_branch__master__of_https___github_com_TaniaFerman_SignTalker____Conflicts____SignCoa" date="1478681197038" recycled="false">
+  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Merge_branch__master__of_https___github_com_TaniaFerman_SignTalker____Conflicts____SignCoa/shelved.patch" />
+  <option name="DESCRIPTION" value="Merge branch 'master' of https://github.com/TaniaFerman/SignTalker  # Conflicts: #&#9;SignCoachApp/AppAttempt/app/src/main/res/drawable-hdpi/a.png #&#9;SignCoachApp/AppAttempt/app/src/main/res/drawable-hdpi/b.png #&#9;SignCoachApp/AppAttempt/app/src/main/res/drawable-mdpi/a.png #&#9;SignCoachApp/AppAttempt/app/src/main/res/drawable-mdpi/b.png #&#9;SignCoachApp/AppAttempt/app/src/main/res/drawable-xhdpi/a.png #&#9;SignCoachApp/AppAttempt/app/src/main/res/drawable-xhdpi/b.png #&#9;SignCoachApp/AppAttempt/app/src/main/res/drawable-xxhdpi/a.png #&#9;SignCoachApp/AppAttempt/app/src/main/res/drawable-xxhdpi/b.png #&#9;SignCoachApp/AppAttempt/app/src/main/res/drawable-xxxhdpi/a.png #&#9;SignCoachApp/AppAttempt/app/src/main/res/drawable-xxxhdpi/b.png " />
+  <binary>
+    <option name="BEFORE_PATH" value="app/src/main/res/drawable-xxxhdpi/b.png" />
+    <option name="AFTER_PATH" value="app/src/main/res/drawable-xxxhdpi/b.png" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Merge_branch__master__of_https___github_com_TaniaFerman_SignTalker____Conflicts____SignCoa/b.png" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="app/src/main/res/drawable-xhdpi/a.png" />
+    <option name="AFTER_PATH" value="app/src/main/res/drawable-xhdpi/a.png" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Merge_branch__master__of_https___github_com_TaniaFerman_SignTalker____Conflicts____SignCoa/a.png" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="app/src/main/res/drawable-mdpi/b.png" />
+    <option name="AFTER_PATH" value="app/src/main/res/drawable-mdpi/b.png" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Merge_branch__master__of_https___github_com_TaniaFerman_SignTalker____Conflicts____SignCoa/b.png" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="app/src/main/res/drawable-xhdpi/b.png" />
+    <option name="AFTER_PATH" value="app/src/main/res/drawable-xhdpi/b.png" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Merge_branch__master__of_https___github_com_TaniaFerman_SignTalker____Conflicts____SignCoa/b.png" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="app/src/main/res/drawable-hdpi/b.png" />
+    <option name="AFTER_PATH" value="app/src/main/res/drawable-hdpi/b.png" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Merge_branch__master__of_https___github_com_TaniaFerman_SignTalker____Conflicts____SignCoa/b.png" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="app/src/main/res/drawable-xxxhdpi/a.png" />
+    <option name="AFTER_PATH" value="app/src/main/res/drawable-xxxhdpi/a.png" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Merge_branch__master__of_https___github_com_TaniaFerman_SignTalker____Conflicts____SignCoa/a.png" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="app/src/main/res/drawable-mdpi/a.png" />
+    <option name="AFTER_PATH" value="app/src/main/res/drawable-mdpi/a.png" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Merge_branch__master__of_https___github_com_TaniaFerman_SignTalker____Conflicts____SignCoa/a.png" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="app/src/main/res/drawable-xxhdpi/a.png" />
+    <option name="AFTER_PATH" value="app/src/main/res/drawable-xxhdpi/a.png" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Merge_branch__master__of_https___github_com_TaniaFerman_SignTalker____Conflicts____SignCoa/a.png" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="app/src/main/res/drawable-hdpi/a.png" />
+    <option name="AFTER_PATH" value="app/src/main/res/drawable-hdpi/a.png" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Merge_branch__master__of_https___github_com_TaniaFerman_SignTalker____Conflicts____SignCoa/a.png" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="app/src/main/res/drawable-xxhdpi/b.png" />
+    <option name="AFTER_PATH" value="app/src/main/res/drawable-xxhdpi/b.png" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Merge_branch__master__of_https___github_com_TaniaFerman_SignTalker____Conflicts____SignCoa/b.png" />
+  </binary>
+</changelist>
