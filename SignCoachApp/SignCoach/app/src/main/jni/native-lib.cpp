@@ -19,9 +19,10 @@ Java_com_danycabrera_signcoach_LearnActivity_processFrame(JNIEnv *env, jobject i
 	// Prepare source and destination image pointers
 	Mat *src = (Mat *) iAddr1;
 	Mat *dst = (Mat *) iAddr2;
-	flip(*src, *src, 1);
+	//
+	// flip(*src, *src, 1);
 	//__android_log_print(ANDROID_LOG_ERROR, "MyLogs", "GlobalN address: %p", &globalN);
-
+	fixRotation(*src, *dst, 1);
 	//cropImage(*src, *dst);
 
 	return checkIfCorrect(*src, c);
