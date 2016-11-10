@@ -1,0 +1,211 @@
+Index: app/src/main/res/drawable/ic_menu_share.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/drawable/ic_menu_share.xml	(date 1478680163000)
++++ app/src/main/res/drawable/ic_menu_share.xml	(revision )
+@@ -1,0 +1,0 @@
+Index: openCVDroid/build/intermediates/bundles/release/res/values/values.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- openCVDroid/build/intermediates/bundles/release/res/values/values.xml	(date 1478680163000)
++++ openCVDroid/build/intermediates/bundles/release/res/values/values.xml	(revision )
+@@ -1,0 +1,0 @@
+Index: .idea/vcs.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/vcs.xml	(date 1478680163000)
++++ .idea/vcs.xml	(revision )
+@@ -1,0 +1,0 @@
+Index: openCVDroid/build/intermediates/incremental/mergeReleaseShaders/merger.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- openCVDroid/build/intermediates/incremental/mergeReleaseShaders/merger.xml	(date 1478680163000)
++++ openCVDroid/build/intermediates/incremental/mergeReleaseShaders/merger.xml	(revision )
+@@ -1,0 +1,0 @@
+Index: app/src/main/res/drawable/ic_menu_manage.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/drawable/ic_menu_manage.xml	(date 1478680163000)
++++ app/src/main/res/drawable/ic_menu_manage.xml	(revision )
+@@ -1,0 +1,0 @@
+Index: openCVDroid/build/intermediates/incremental/packageReleaseResources/merged.dir/values/values.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- openCVDroid/build/intermediates/incremental/packageReleaseResources/merged.dir/values/values.xml	(date 1478680163000)
++++ openCVDroid/build/intermediates/incremental/packageReleaseResources/merged.dir/values/values.xml	(revision )
+@@ -1,0 +1,0 @@
+Index: openCVDroid/build/intermediates/incremental/packageReleaseResources/merger.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- openCVDroid/build/intermediates/incremental/packageReleaseResources/merger.xml	(date 1478680163000)
++++ openCVDroid/build/intermediates/incremental/packageReleaseResources/merger.xml	(revision )
+@@ -1,0 +1,0 @@
+Index: .idea/runConfigurations.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/runConfigurations.xml	(date 1478680163000)
++++ .idea/runConfigurations.xml	(revision )
+@@ -1,0 +1,0 @@
+Index: app/src/main/res/drawable/ic_menu_slideshow.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/drawable/ic_menu_slideshow.xml	(date 1478680163000)
++++ app/src/main/res/drawable/ic_menu_slideshow.xml	(revision )
+@@ -1,0 +1,0 @@
+Index: app/src/main/res/drawable/side_nav_bar.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/drawable/side_nav_bar.xml	(date 1478680163000)
++++ app/src/main/res/drawable/side_nav_bar.xml	(revision )
+@@ -1,0 +1,0 @@
+Index: openCVDroid/build/intermediates/manifests/aapt/release/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- openCVDroid/build/intermediates/manifests/aapt/release/AndroidManifest.xml	(date 1478680163000)
++++ openCVDroid/build/intermediates/manifests/aapt/release/AndroidManifest.xml	(revision )
+@@ -1,0 +1,0 @@
+Index: app/src/main/res/drawable/ic_menu_send.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/drawable/ic_menu_send.xml	(date 1478680163000)
++++ app/src/main/res/drawable/ic_menu_send.xml	(revision )
+@@ -1,0 +1,0 @@
+Index: openCVDroid/build/generated/source/aidl/release/org/opencv/engine/OpenCVEngineInterface.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- openCVDroid/build/generated/source/aidl/release/org/opencv/engine/OpenCVEngineInterface.java	(date 1478680163000)
++++ openCVDroid/build/generated/source/aidl/release/org/opencv/engine/OpenCVEngineInterface.java	(revision )
+@@ -1,0 +1,0 @@
+Index: app/src/main/res/drawable/ic_menu_gallery.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/drawable/ic_menu_gallery.xml	(date 1478680163000)
++++ app/src/main/res/drawable/ic_menu_gallery.xml	(revision )
+@@ -1,0 +1,0 @@
+Index: .idea/gradle.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/gradle.xml	(date 1478680163000)
++++ .idea/gradle.xml	(revision )
+@@ -1,0 +1,0 @@
+Index: openCVDroid/build/intermediates/bundles/release/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- openCVDroid/build/intermediates/bundles/release/AndroidManifest.xml	(date 1478680163000)
++++ openCVDroid/build/intermediates/bundles/release/AndroidManifest.xml	(revision )
+@@ -1,0 +1,0 @@
+Index: .idea/compiler.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/compiler.xml	(date 1478680163000)
++++ .idea/compiler.xml	(revision )
+@@ -1,0 +1,0 @@
+Index: openCVDroid/build/intermediates/incremental/mergeReleaseAssets/merger.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- openCVDroid/build/intermediates/incremental/mergeReleaseAssets/merger.xml	(date 1478680163000)
++++ openCVDroid/build/intermediates/incremental/mergeReleaseAssets/merger.xml	(revision )
+@@ -1,0 +1,0 @@
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/misc.xml	(date 1478680163000)
++++ .idea/misc.xml	(revision )
+@@ -1,32 +1,5 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+-  <component name="EntryPointsManager">
+-    <entry_points version="2.0" />
+-  </component>
+-  <component name="NullableNotNullManager">
+-    <option name="myDefaultNullable" value="android.support.annotation.Nullable" />
+-    <option name="myDefaultNotNull" value="android.support.annotation.NonNull" />
+-    <option name="myNullables">
+-      <value>
+-        <list size="4">
+-          <item index="0" class="java.lang.String" itemvalue="org.jetbrains.annotations.Nullable" />
+-          <item index="1" class="java.lang.String" itemvalue="javax.annotation.Nullable" />
+-          <item index="2" class="java.lang.String" itemvalue="edu.umd.cs.findbugs.annotations.Nullable" />
+-          <item index="3" class="java.lang.String" itemvalue="android.support.annotation.Nullable" />
+-        </list>
+-      </value>
+-    </option>
+-    <option name="myNotNulls">
+-      <value>
+-        <list size="4">
+-          <item index="0" class="java.lang.String" itemvalue="org.jetbrains.annotations.NotNull" />
+-          <item index="1" class="java.lang.String" itemvalue="javax.annotation.Nonnull" />
+-          <item index="2" class="java.lang.String" itemvalue="edu.umd.cs.findbugs.annotations.NonNull" />
+-          <item index="3" class="java.lang.String" itemvalue="android.support.annotation.NonNull" />
+-        </list>
+-      </value>
+-    </option>
+-  </component>
+   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
+     <OptionsSetting value="true" id="Add" />
+     <OptionsSetting value="true" id="Remove" />
+\ No newline at end of file
+Index: openCVDroid/build/intermediates/incremental/packageReleaseResources/compile-file-map.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>windows-1252
+===================================================================
+--- openCVDroid/build/intermediates/incremental/packageReleaseResources/compile-file-map.properties	(date 1478680163000)
++++ openCVDroid/build/intermediates/incremental/packageReleaseResources/compile-file-map.properties	(revision )
+@@ -1,1 +1,1 @@
+-#Tue Nov 08 14:06:04 PST 2016
++#Wed Nov 09 00:36:05 PST 2016
+Index: app/src/main/res/drawable/ic_menu_camera.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/drawable/ic_menu_camera.xml	(date 1478680163000)
++++ app/src/main/res/drawable/ic_menu_camera.xml	(revision )
+@@ -1,0 +1,0 @@
+Index: .idea/modules.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/modules.xml	(date 1478680163000)
++++ .idea/modules.xml	(revision )
+@@ -1,0 +1,0 @@
