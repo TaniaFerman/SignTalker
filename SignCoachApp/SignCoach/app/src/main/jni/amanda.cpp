@@ -56,14 +56,14 @@ bool checkIfCorrect(Mat &src, char letter) {
     rectangle( src, tl, br, Scalar::all(255), 3, 8, 0 );
     
 
-    /*
+
     Mat gray;
 	cvtColor( src, gray, COLOR_BGR2GRAY );
 	equalizeHist( gray, gray );
 	sign_cascade.detectMultiScale( src, signs, 1.1, 3, 0|CASCADE_SCALE_IMAGE ,Size(150,150) );
-    */
+
     
-    sign_cascade.detectMultiScale( fgMask, signs, 1.1, 3, 0|CASCADE_SCALE_IMAGE ,Size(150,150) );
+   // sign_cascade.detectMultiScale( fgMask, signs, 1.1, 3, 0|CASCADE_SCALE_IMAGE ,Size(150,150) );
     Point center(src.cols / 2, src.rows / 2);
 
     int minIdx = -1;
