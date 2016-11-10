@@ -15,7 +15,7 @@ import java.util.Locale;
 
 public class FileOps {
 
-	static String datasetPath = "signtalker/data/v1";
+	static String datasetPath = "signcoach/data/v1";
 
 	// Returns a hashset of strings with all the mounted storage paths
 	public static HashSet<String> getExternalMounts() {
