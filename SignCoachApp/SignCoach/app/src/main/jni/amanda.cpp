@@ -52,6 +52,7 @@ bool checkIfCorrect(Mat &src, char letter) {
 	vector<Rect> signs;
     Point br(int(src.cols * 0.85), int(src.rows * 0.85));
     Point tl(int(src.cols * 0.15), int(src.rows * 0.15));
+    Rect centroid(tl,br);
     rectangle( src, tl, br, Scalar::all(255), 3, 8, 0 );
     
 
@@ -76,11 +77,19 @@ bool checkIfCorrect(Mat &src, char letter) {
         float count = countNonZero(Mat(fgMask, r)); 
         float res = cv::norm(center-p);
         
+        bool contains = (centroid & r).area() == r.area();
+        if (contains && count > maxArea) {
+            minIdx = i;
+            maxArea = count;
+        }
+
+        /*        
         if (count > maxArea && res < minDist  && r.contains(center)) {
             minIdx = i;
             minDist = res;
             maxArea = count;
         }
+        */
 	}
     
     if (minIdx > -1) { 
