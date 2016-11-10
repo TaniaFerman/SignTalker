@@ -218,7 +218,7 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
         setMessage();
         if (current_message.isLesson()) {
             moveToLessonView(null); //The sending view is not used to move views anyway, so null
-        } else {
+        } else if(viewIsQuestion){
             moveToQuestionView(null);
         }
     }
@@ -233,8 +233,6 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
         testManager.sendResult(result);
         if (testManager.currentSetCompleted())
             getNextSet();
-        else
-            nextQuestion(null);
     }
 
     private boolean isVowel(String c) {
@@ -386,6 +384,15 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
             }
         });
     }
+    private void moveToFailureView(View v){
+        viewIsQuestion = false;
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.failure_screen)));
+            }
+        });
+    }
 
     public void fakeSuccess(View v) {
         returnResult(true);
@@ -396,6 +403,7 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
     public void fakeFailure(View v) {
         questionHandler.removeCallbacks(questionTimeOut);
         returnResult(false);
+        moveToFailureView(v);
     }
 
     public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
@@ -423,6 +431,7 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
             }
             else{
                 fakeFailure(null);
+                Log.d(TAG, "going to failure town");
             }
             trueCount = 0;
             falseCount = 0;
