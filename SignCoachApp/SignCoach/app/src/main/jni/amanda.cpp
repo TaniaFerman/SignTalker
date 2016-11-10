@@ -47,10 +47,14 @@ bool checkIfCorrect(Mat &src, char letter) {
 		loaded_letter = letter;
 	}
     
-    pMOG2->apply(src, fgMask, 0.3);
+    pMOG2->apply(src, fgMask, 0.25);
 
 	vector<Rect> signs;
-	
+    Point br(int(src.cols * 0.85), int(src.rows * 0.85));
+    Point tl(int(src.cols * 0.15), int(src.rows * 0.15));
+    rectangle( src, tl, br, Scalar::all(255), 3, 8, 0 );
+    
+
     /*
     Mat gray;
 	cvtColor( src, gray, COLOR_BGR2GRAY );
@@ -77,24 +81,12 @@ bool checkIfCorrect(Mat &src, char letter) {
             minDist = res;
             maxArea = count;
         }
-		
-        //rectangle( src, signs[i].tl(), signs[i].br(), Scalar(0,0,255) , 3, 8, 0 );
 	}
     
     if (minIdx > -1) { 
         rectangle( src, signs[minIdx].tl(), signs[minIdx].br(), Scalar(0,0,255), 3, 8, 0 );
         return true;
     }
-    
-    /*
-	Mat left;
-	cvtColor(gray, left, COLOR_GRAY2BGR);
-	Mat img = merge(left,src);
-	show("Result", img);
-
-	sign_cascade.empty();
-	if (signs.size() > 0) return true;
-    */
 
 	return false;
 }
