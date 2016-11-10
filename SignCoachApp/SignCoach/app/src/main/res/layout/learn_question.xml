@@ -41,7 +41,7 @@
             />
     </FrameLayout>
 
-    <Button
+   <!-- <Button
         android:text="Fake Success"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -56,6 +56,6 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:onClick="fakeFailure"
-        android:id="@+id/fail_button" />
+        android:id="@+id/fail_button" />-->
 
 </RelativeLayout>
