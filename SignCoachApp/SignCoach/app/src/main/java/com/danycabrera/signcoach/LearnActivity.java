@@ -6,6 +6,8 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -34,6 +36,10 @@ import org.opencv.android.OpenCVLoader;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.logging.LogRecord;
+
 import fragment.OptionsMenuFragment;
 
 public class LearnActivity extends AppCompatActivity implements CvCameraViewListener2, NavigationView.OnNavigationItemSelectedListener {
@@ -43,8 +49,10 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
     private TextView tv_question, tv_lesson;
     private ImageView iv_lesson;
     private ViewFlipper viewFlipper;
-    private static int counter = 0;
+    private static int counter = 0, trueCount, falseCount;
+    private static long questionElapsed = 0, questionStart;
     private TestManager testManager;
+    private Handler questionHandler;
     private LearnMessage current_message;
     boolean camera_setting, handed_setting, viewIsQuestion = false;
     // Loads camera view of OpenCV for us to use. This lets us see using OpenCV
@@ -64,7 +72,7 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_learn);
-
+        questionHandler = new Handler();
         //---------Do drawer stuff-----------------------
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -381,10 +389,12 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
 
     public void fakeSuccess(View v) {
         returnResult(true);
+        questionHandler.removeCallbacks(questionTimeOut);
         moveToSuccessView(v);
     }
 
     public void fakeFailure(View v) {
+        questionHandler.removeCallbacks(questionTimeOut);
         returnResult(false);
     }
 
@@ -394,20 +404,30 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
         if(viewIsQuestion) {
             boolean r = processFrame(imgOriginal.getNativeObjAddr(), img.getNativeObjAddr(), (char) current_message.getString().getBytes()[0]);
             if (r) {
+                trueCount++;
                 Log.i("onCameraFrame", "This is an C!");
             } else {
+                falseCount++;
                 Log.i("onCameraFrame", "NOT C...");
             }
             updateCount(r);
-            if (counter > 5) {
-                counter = 0;
-                Log.i(TAG, "SUCCESSSSSSSSSSSSS");
-                moveToSuccessView(null);
-            }
         }
         return imgOriginal;
     }
-
+    private Runnable questionTimeOut = new Runnable() {
+        @Override
+        public void run() {
+            Log.d(TAG, "TrueCount: " + Integer.toString(trueCount) + " FalseCount: " + Integer.toString(falseCount));
+            if(trueCount > falseCount){
+                fakeSuccess(null);
+            }
+            else{
+                fakeFailure(null);
+            }
+            trueCount = 0;
+            falseCount = 0;
+        }
+    };
     public void moveToLessonView(View v) {
         viewIsQuestion = false;
         viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.lesson_view)));
@@ -415,7 +435,12 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
 
     public void moveToQuestionView(View v) {
         viewIsQuestion = true;
+        questionElapsed = 0;
+        trueCount = 0;
+        falseCount = 0;
+        questionStart = SystemClock.elapsedRealtime();
         viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.question_view)));
+        questionHandler.postDelayed(questionTimeOut, 5000);
     }
 
     public static native boolean processFrame(long iAddr1, long iAddr2, char c);
