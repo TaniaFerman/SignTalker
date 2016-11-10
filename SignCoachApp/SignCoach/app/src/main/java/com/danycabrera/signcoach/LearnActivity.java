@@ -1,24 +1,15 @@
 package com.danycabrera.signcoach;
 
 import android.Manifest;
-import android.app.Activity;
-import android.app.Application;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.preference.PreferenceManager;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -31,11 +22,8 @@ import android.view.ViewStub;
 import android.widget.TextView;
 import android.widget.ImageView;
 import android.widget.ViewFlipper;
-import android.graphics.drawable.Drawable;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.SurfaceView;
-import android.view.Menu;
+
 import org.opencv.android.JavaCameraView;
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
@@ -45,11 +33,8 @@ import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.w3c.dom.Text;
 
 import fragment.OptionsMenuFragment;
-
-import junit.framework.Test;
 
 public class LearnActivity extends AppCompatActivity implements CvCameraViewListener2, NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "OCV:LearnActivity";
@@ -61,7 +46,7 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
     private static int counter = 0;
     private TestManager testManager;
     private LearnMessage current_message;
-    boolean camera_setting, handed_setting;
+    boolean camera_setting, handed_setting, viewIsQuestion = false;
     // Loads camera view of OpenCV for us to use. This lets us see using OpenCV
     private CameraBridgeViewBase mOpenCvCameraView;
     Mat mGray;
@@ -125,9 +110,9 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
     }
 
     private void updateCount(boolean val) {
-        if (val) counter += 2;
+        if (val) counter++;
         else {
-            if (counter > 0) counter--;
+            counter = 0;
         }
     }
 
@@ -135,10 +120,10 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
         if (current_message.isLesson()) {
             tv_lesson.setText(doGrammarCat(lesson_string, current_message.getString()));
             iv_lesson.setImageDrawable(findDrawable(current_message.getString()));
-            viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.lesson_view)));
+            moveToLessonView(null);
         } else {
             tv_question.setText(doGrammarCat(question_string, current_message.getString()));
-            viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.question_view)));
+            moveToQuestionView(null);
         }
     }
 
@@ -208,17 +193,6 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
         else mOpenCvCameraView.setCameraIndex(mOpenCvCameraView.CAMERA_ID_BACK);
         mOpenCvCameraView.enableView();
     }
-
-    public void prevQuestion(View v) {
-     /*   byte[] temp = new byte[1];
-        temp[0] = (byte)(current_char.getBytes()[0] - 1);
-        if(temp[0] < (byte)'A'){
-            temp[0] = (byte)'A';
-        }
-        current_char = new String(temp);
-        nextQuestion();*/
-    }
-
     //Concatenates and does appropriate grammar for provided message and character
     private String doGrammarCat(String message, String c) {
         String vowel_grammar = " ";
@@ -395,21 +369,19 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
         img.release();
     }
 
-    private void showSuccess() {
-      /*  AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setTitle("Noice");
-        alertDialog.setMessage("You are good");
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-        alertDialog.show();*/
+    private void moveToSuccessView(View v) {
+        viewIsQuestion = false;
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.success_screen)));
+            }
+        });
     }
 
     public void fakeSuccess(View v) {
         returnResult(true);
+        moveToSuccessView(v);
     }
 
     public void fakeFailure(View v) {
@@ -419,27 +391,30 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
     public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
         imgOriginal = inputFrame.rgba();
         // Process and return frame
-
-        boolean r = processFrame(imgOriginal.getNativeObjAddr(), img.getNativeObjAddr(), (char) current_message.getString().getBytes()[0]);
-        if (r) {
-            Log.i("onCameraFrame", "This is an C!");
-        } else {
-            Log.i("onCameraFrame", "NOT C...");
-        }
-        updateCount(r);
-        if (counter > 5) {
-            counter = 0;
-            Log.i(TAG, "SUCCESSSSSSSSSSSSS");
-            showSuccess();
+        if(viewIsQuestion) {
+            boolean r = processFrame(imgOriginal.getNativeObjAddr(), img.getNativeObjAddr(), (char) current_message.getString().getBytes()[0]);
+            if (r) {
+                Log.i("onCameraFrame", "This is an C!");
+            } else {
+                Log.i("onCameraFrame", "NOT C...");
+            }
+            updateCount(r);
+            if (counter > 5) {
+                counter = 0;
+                Log.i(TAG, "SUCCESSSSSSSSSSSSS");
+                moveToSuccessView(null);
+            }
         }
         return imgOriginal;
     }
 
     public void moveToLessonView(View v) {
+        viewIsQuestion = false;
         viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.lesson_view)));
     }
 
     public void moveToQuestionView(View v) {
+        viewIsQuestion = true;
         viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.question_view)));
     }
 
