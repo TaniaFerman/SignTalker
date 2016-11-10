@@ -26,5 +26,8 @@
         <include layout="@layout/success_screen"
             android:layout_height="match_parent"
             android:layout_width="match_parent"/>
+        <include layout="@layout/failure_screen"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"/>
     </ViewFlipper>
 </RelativeLayout>
