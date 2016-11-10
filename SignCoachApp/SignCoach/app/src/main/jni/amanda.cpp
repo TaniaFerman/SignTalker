@@ -93,7 +93,7 @@ bool checkIfCorrect(Mat &src, char letter) {
 	}
     
     if (minIdx > -1) { 
-        rectangle( src, signs[minIdx].tl(), signs[minIdx].br(), Scalar(0,0,255), 3, 8, 0 );
+        //rectangle( src, signs[minIdx].tl(), signs[minIdx].br(), Scalar(0,0,255), 3, 8, 0 );
         return true;
     }
 
