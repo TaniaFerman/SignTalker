@@ -23,7 +23,7 @@
         android:layout_centerHorizontal="true"
         />
     <FrameLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_question"
         android:layout_centerHorizontal="true"
@@ -32,7 +32,7 @@
         android:layout_above="@id/learn_space"
         android:id="@+id/learnCameraView">
         <org.opencv.android.JavaCameraView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
             android:id="@+id/show_camera_activity_java_surface_view"

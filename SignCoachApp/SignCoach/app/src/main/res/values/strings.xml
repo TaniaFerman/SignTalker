@@ -10,6 +10,7 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="camera_setting">FrontCameraEnabled</string>
     <string name="handed_setting">IsLefty</string>
+    <string name="success_message">Success!!!</string>
     <string name="welcome_message">Welcome to SignCoach!!!"</string>
 
 
