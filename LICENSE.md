@@ -1,4 +1,4 @@
-![Alt text](images/SignCoachLogo.png)
+![Alt text](../html/images/SignCoachLogo.png)
 
 ###                   Apache License
 ###                Version 2.0, January 2004
