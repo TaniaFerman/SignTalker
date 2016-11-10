@@ -19,7 +19,7 @@ cv::Mat merge(cv::Mat &img1, cv::Mat &img2);
 /* end testing*/
 
 CascadeClassifier sign_cascade;
-string sign_cascade_folder = "data/";
+string sign_cascade_folder = "data/v1/";
 //string sign_cascade_name = "/cascade.xml";
 string sign_cascade_ext = ".xml";
 string hand_type = "R";
