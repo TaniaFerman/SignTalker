@@ -1,3 +1,4 @@
+<!-- ![Alt text](../html/images/SignCoachLogo.png) -->
 ![Alt text](images/SignCoachLogo.png)
 
 ##### [Department of Computer Science - University of Victoria](http://www.csc.uvic.ca/)

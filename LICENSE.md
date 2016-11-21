@@ -1,3 +1,4 @@
+<!-- ![Alt text](../html/images/SignCoachLogo.png) -->
 ![Alt text](images/SignCoachLogo.png)
 
 ###                   Apache License
