@@ -6,5 +6,9 @@
     {
         "outputFile": "C:\\SignCoach\\AppAttempt\\openCVDroid\\build\\intermediates\\incremental\\mergeDebugAndroidTestResources\\merged.dir\\values\\values.xml",
         "map": []
+    },
+    {
+        "outputFile": "C:\\SignCoachGit\\SignCoachApp\\SignCoach\\openCVDroid\\build\\intermediates\\incremental\\mergeDebugAndroidTestResources\\merged.dir\\values\\values.xml",
+        "map": []
     }
 ]
