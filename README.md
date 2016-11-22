@@ -10,17 +10,17 @@ We are proposing a mobile app that will act as an educational tool for learning 
 
 In our project we will use the camera on an Android device and existing computer vision machine learning to allow users to learn the ASL alphabet. The user would place her or his hand in a comfortable distance above the phone with the app open. Our mobile app will allow users to have an interactive learning, and to have an automatic feedback about their signing.
 
-### You can download SignCoach on our webpage
+### You can download SignCoach from our webpage
 
 http://signcoach.me
-
-### Interactive Prototype
-
-https://projects.invisionapp.com/share/S49501VVU#/screens/201079137
 
 ### Promotional Video
 
 https://www.youtube.com/watch?v=Z4ZxQklkmUk
+
+### Interactive Prototype
+
+https://projects.invisionapp.com/share/S49501VVU#/screens/201079137
 
 ### Members:
 
