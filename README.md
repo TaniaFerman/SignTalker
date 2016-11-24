@@ -14,13 +14,9 @@ In our project we will use the camera on an Android device and existing computer
 
 http://signcoach.me
 
-### Promotional Video
+### SignCoach contact email:
 
-https://www.youtube.com/watch?v=Z4ZxQklkmUk
-
-### Interactive Prototype
-
-https://projects.invisionapp.com/share/S49501VVU#/screens/201079137
+SignCoachASL@gmail.com
 
 ### Members:
 
@@ -30,10 +26,9 @@ https://projects.invisionapp.com/share/S49501VVU#/screens/201079137
 - Tristan Partridge [tpart526@uvic.ca]
 - Maria Ferman [mfermang@uvic.ca]
 
-### SignCoach contact email:
+### [Promotional Video](https://www.youtube.com/watch?v=Z4ZxQklkmUk)
 
-- SignCoachASL@gmail.com
-
+### [Interactive Prototype](https://projects.invisionapp.com/share/S49501VVU#/screens/201079137)
 
 ### [ASL Contact Information](https://github.com/TaniaFerman/SignTalker/blob/master/docs/findingASLusers.md)
 
