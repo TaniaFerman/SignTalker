@@ -25,11 +25,7 @@
             <item
                 android:id="@+id/send_feedback"
                 android:icon="@drawable/ic_local_post_office"
-                android:title="Help with development!" />
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_action_bug"
-                android:title="Report Bug" />
+                android:title="Give us feedback!" />
         </menu>
     </item>
 
