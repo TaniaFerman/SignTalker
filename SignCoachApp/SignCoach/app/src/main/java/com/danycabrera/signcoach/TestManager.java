@@ -13,17 +13,19 @@ public class TestManager {
     private static String[] questionSets = {"UTOK","BSVP","WEXF","ACLI","MRQG","NDYH"};
     private static int currentSetIndex;
     private LearnMessage current_message;
-    private LinkedList<LearnMessage> message_queue;
+    private LinkedList<LearnMessage> message_queue, question_queue, lesson_queue;
 
     TestManager(){
         currentSetIndex = 0;
         initQueue();
+        lesson_queue = new LinkedList<>();
+        question_queue = new LinkedList<>();
        // makeQuestionSet();
     }
     //Clears and fills queue with values from current set
     private void initQueue(){
         int len = questionSets[currentSetIndex].length();
-        if(message_queue == null) message_queue = new LinkedList<LearnMessage>();
+        if(message_queue == null) message_queue = new LinkedList<>();
         else    message_queue.clear();
         for(int i = 0; i < len; i++){
             message_queue.addLast(new LearnMessage(true, questionSets[currentSetIndex].charAt(i)));
@@ -44,8 +46,18 @@ public class TestManager {
         return true;
     }
     public LearnMessage getNextMessage(){
-        if(currentSetCompleted()){
-            return null;
+        if(message_queue.size() == 0){
+            if(lesson_queue.size() != 0){
+                //Could probably do both loops in one
+                //but that seems kinda sketch
+                while(lesson_queue.size() != 0){
+                    message_queue.addLast(lesson_queue.pop());
+                }
+                while(question_queue.size() != 0){
+                    message_queue.addLast(question_queue.pop());
+                }
+            }
+            else return null;
         }
         current_message = message_queue.pop();
         return current_message;
@@ -56,8 +68,8 @@ public class TestManager {
         if(current_message.isLesson()) return;
 
         if(!correct) {
-            message_queue.addLast(new LearnMessage(true, current_message.getChar()));
-            message_queue.addLast(new LearnMessage(false, current_message.getChar()));
+            lesson_queue.addLast(new LearnMessage(true, current_message.getChar()));
+            question_queue.addLast(new LearnMessage(false, current_message.getChar()));
         }
     }
     public void setSet(int setIndex){
@@ -65,7 +77,7 @@ public class TestManager {
         initQueue();
     }
     public boolean currentSetCompleted(){
-        return message_queue.size() == 0;
+        return message_queue.size() == 0 && question_queue.size() == 0 && lesson_queue.size() == 0;
     }
     public int getCurrentSetIndex(){
         return currentSetIndex;
