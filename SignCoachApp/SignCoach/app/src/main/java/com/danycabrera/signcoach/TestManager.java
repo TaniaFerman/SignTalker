@@ -60,7 +60,17 @@ public class TestManager {
             message_queue.addLast(new LearnMessage(false, current_message.getChar()));
         }
     }
+    public void setSet(int setIndex){
+        currentSetIndex = setIndex;
+        initQueue();
+    }
     public boolean currentSetCompleted(){
         return message_queue.size() == 0;
+    }
+    public int getCurrentSetIndex(){
+        return currentSetIndex;
+    }
+    public int getNumberOfSets(){
+        return questionSets.length;
     }
 }
