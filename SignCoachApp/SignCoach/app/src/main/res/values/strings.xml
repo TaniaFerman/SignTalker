@@ -9,6 +9,7 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="camera_setting">FrontCameraEnabled</string>
+    <string name="current_set">CurrentSet</string>
     <string name="handed_setting">IsLefty</string>
     <string name="success_message">Success!!!</string>
     <string name="failure_message">Failure!!!</string>
