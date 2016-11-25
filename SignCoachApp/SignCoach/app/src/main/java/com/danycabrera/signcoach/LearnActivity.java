@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.support.design.widget.NavigationView;
@@ -36,6 +37,8 @@ import org.opencv.android.OpenCVLoader;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 
+import java.util.Map;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.LogRecord;
@@ -46,6 +49,7 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
     private static final String TAG = "OCV:LearnActivity";
     private static final String question_string = "Show me a", lesson_string = "This is a";
     private static final String vowels = "AEFHILMNORSX";    //Letters which should be preceded by 'an'
+    public static final String PREFS_NAME = "SC_PREFS";
     private TextView tv_question, tv_lesson;
     private ImageView iv_lesson;
     private ViewFlipper viewFlipper;
@@ -115,6 +119,7 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setLayoutDirection(View.LAYOUT_DIRECTION_INHERIT);
         mOpenCvCameraView.setCvCameraViewListener(this);
+
     }
 
     private void updateCount(boolean val) {
@@ -271,6 +276,13 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         }
+        else if(id == R.id.send_feedback){
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("plain/text");
+            intent.putExtra(Intent.EXTRA_EMAIL, new String[] { "signcoachasl@gmail.com" });
+            intent.putExtra(Intent.EXTRA_SUBJECT, "RE: SignCoach Feedback");
+            startActivity(Intent.createChooser(intent, ""));
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -307,7 +319,10 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
 
     @Override
     public void onPause() {
-        Log.d(TAG, "Pausing activity. Current camera setting is " + ((camera_setting) ? "front" : "back"));
+        SharedPreferences.Editor edit = prefs.edit();
+        edit.putInt(getString(R.string.current_set), testManager.getCurrentSetIndex());
+        edit.commit();
+        Log.d(TAG, "onPause: current set is " + Integer.toString(testManager.getCurrentSetIndex()));
         super.onPause();
         if (mOpenCvCameraView != null)
             mOpenCvCameraView.disableView();
@@ -316,7 +331,9 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
     @Override
     public void onResume() {
         super.onResume();
+        getCurrentPreferences();
         camera_setting = getCurrentCameraSetting();
+        int currentSet = prefs.getInt(getString(R.string.current_set), -1);
         if (!OpenCVLoader.initDebug()) {
             Log.d(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
             OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_0_0, this, mLoaderCallback);
@@ -324,14 +341,15 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
             Log.d(TAG, "OpenCV library found inside package. Using it!");
             mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
         }
-        getCurrentPreferences();
-        Log.d(TAG, "Resuming activity. Current camera setting is " + ((camera_setting) ? "front" : "back"));
+        Log.d(TAG, "onResume current set is " + Integer.toString(currentSet));
+        testManager.setSet(currentSet);
+        Log.d(TAG, "Attempting to show set " + Integer.toString(currentSet));
+        nextQuestion(null);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        getCurrentPreferences();
         setCamera();
     }
 
@@ -342,7 +360,7 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
     }
 
     public void getCurrentPreferences() {
-        prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         Log.d(TAG, "STARTING ACTIVITY");
         camera_default = getResources().getBoolean(R.bool.camera_default);
         handed_default = getResources().getBoolean(R.bool.handed_default);
@@ -377,6 +395,8 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
 
     private void moveToSuccessView(View v) {
         viewIsQuestion = false;
+        //This is necessary because this function is not always caled
+        //from the UI thread
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
