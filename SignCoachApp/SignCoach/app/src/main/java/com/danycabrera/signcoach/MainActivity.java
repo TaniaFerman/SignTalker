@@ -19,6 +19,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.content.Intent;
 import android.view.ViewStub;
+import android.content.SharedPreferences;
+import android.app.DialogFragment;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.LoaderCallbackInterface;
@@ -30,9 +32,9 @@ import com.danycabrera.signcoach.FileOps;
 public class MainActivity extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener, NavigationView.OnNavigationItemSelectedListener {
     // Used for logging success or failure messages
     private static final String TAG = "OCVSample::Activity";
+    public SharedPreferences prefs;
     static {
         System.loadLibrary("native-lib");
-
         if(!OpenCVLoader.initDebug()){
             Log.d(TAG, "OpenCV not loaded");
         } else {
@@ -73,13 +75,15 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     protected void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "called onCreate");
         super.onCreate(savedInstanceState);
-        FileOps.copyDatasetFiles(this);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         ViewStub stub = (ViewStub) findViewById(R.id.content_stub);
         stub.setLayoutResource(R.layout.content_main);
         stub.inflate();
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -88,16 +92,17 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
         navigationView.setNavigationItemSelectedListener(this);
-        Fragment frag = getFragmentManager().findFragmentByTag("options_menu");
+
+        Fragment opt_frag = getFragmentManager().findFragmentByTag("options_menu");
         setTitle("SignCoach");
-        if(frag == null) {
-            frag = new OptionsMenuFragment();
+        if(opt_frag == null) {
+            opt_frag = new OptionsMenuFragment();
             FragmentTransaction trans = getFragmentManager().beginTransaction();
-            trans.add(frag, "options_menu");
+            trans.add(opt_frag, "options_menu");
             trans.commit();
         }
+        prefs = getSharedPreferences(getString(R.string.prefs_file), MODE_PRIVATE);
         verifyStoragePermissions(this);
-        initGlobals("/sdcard");
     }
     public void verifyStoragePermissions(Activity activity) {
         // Check if we have write permission
@@ -111,6 +116,11 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                     REQUEST_EXTERNAL_STORAGE
             );
         }
+    }
+    @Override
+    public void onRequestPermissionsResult (int requestCode, String[] permissions, int[] grantResults) {
+        initGlobals("/sdcard");
+        FileOps.copyDatasetFiles(this);
     }
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -158,6 +168,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     @Override
     public void onResume()
     {
+        prefs = getSharedPreferences(getString(R.string.prefs_file), MODE_PRIVATE);
         super.onResume();
         if (!OpenCVLoader.initDebug()) {
             Log.d(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
@@ -168,18 +179,17 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         }
     }
     public void learnClick(View v){
-        Intent intent = new Intent(this, LearnActivity.class);
-        startActivity(intent);
-        overridePendingTransition(R.anim.blow_up, R.anim.stay_still);
+        int hand = prefs.getInt(getString(R.string.handed_setting), -1);
+        if(hand == -1){
+            DialogFragment dialog = new RequestDialog();
+            dialog.show(getFragmentManager(), "handed_dialog");
+        }
+        else{
+            Intent intent = new Intent(this, LearnActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.blow_up, R.anim.stay_still);
+        }
     }
-    public void testClick(View v){
-      //  Intent intent = new Intent(this, NavigationFragment.class);
-      //  startActivity(intent);
-    }
-    public void fbClick(View v){
-        setTitle("feedbackin");
-    }
-
     public static native void initGlobals(String externalStoragePath);
 
 }
