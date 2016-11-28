@@ -15,6 +15,13 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:id="@+id/tv_question" />
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_question"
+        android:id="@+id/progressbar"
+        />
     <Space
         android:id="@+id/learn_space"
         android:layout_width="wrap_content"
@@ -25,7 +32,7 @@
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_question"
+        android:layout_below="@id/progressbar"
         android:layout_centerHorizontal="true"
         android:layout_alignParentTop="false"
         android:layout_marginTop="30dp"
