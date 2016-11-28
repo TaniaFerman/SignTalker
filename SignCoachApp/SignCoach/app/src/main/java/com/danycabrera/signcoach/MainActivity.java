@@ -26,9 +26,6 @@ import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 
-import fragment.OptionsMenuFragment;
-import com.danycabrera.signcoach.FileOps;
-
 public class MainActivity extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener, NavigationView.OnNavigationItemSelectedListener {
     // Used for logging success or failure messages
     private static final String TAG = "OCVSample::Activity";
@@ -188,6 +185,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     }
     public void learnClick(View v){
         int hand = prefs.getInt(getString(R.string.handed_setting), -1);
+        //If the user has not chosen their preferred hand, request it
         if(hand == -1){
             DialogFragment dialog = new RequestDialog();
             dialog.show(getFragmentManager(), "handed_dialog");
