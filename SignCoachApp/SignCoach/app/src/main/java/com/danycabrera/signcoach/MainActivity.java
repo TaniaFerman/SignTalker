@@ -102,9 +102,13 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
             trans.commit();
         }
         prefs = getSharedPreferences(getString(R.string.prefs_file), MODE_PRIVATE);
-        verifyStoragePermissions(this);
+        if(verifyStoragePermissions(this)) {
+            //These methods must be run on every launch of the app
+            initGlobals("/sdcard");
+            FileOps.copyDatasetFiles(this);
+        }
     }
-    public void verifyStoragePermissions(Activity activity) {
+    public boolean verifyStoragePermissions(Activity activity) {
         // Check if we have write permission
         int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
@@ -115,8 +119,12 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                     PERMISSIONS_STORAGE,
                     REQUEST_EXTERNAL_STORAGE
             );
+            return false;
         }
+        return true;
     }
+    //This is called on the first run after permissions are allowed
+    //Without this, the permission dependent code will run before the user can allow the permissions
     @Override
     public void onRequestPermissionsResult (int requestCode, String[] permissions, int[] grantResults) {
         initGlobals("/sdcard");
