@@ -26,7 +26,6 @@ string hand_type = "R";
 
 Mat fgMask; 
 Ptr<BackgroundSubtractor> pMOG2 = createBackgroundSubtractorMOG2();
-//pMOG2 = bgsegm::createBackgroundSubtractorMOG(); 
 
 char loaded_letter = ' '; // Set to the currently loaded cascade file
 void rot90(Mat &src, int flag);
@@ -47,7 +46,7 @@ bool checkIfCorrect(Mat &src, char letter) {
 		loaded_letter = letter;
 	}
     
-    pMOG2->apply(src, fgMask, 0.25);
+    //pMOG2->apply(src, fgMask, 0.25);
 
 	vector<Rect> signs;
     Point br(int(src.cols * 0.85), int(src.rows * 0.85));
@@ -56,31 +55,31 @@ bool checkIfCorrect(Mat &src, char letter) {
     rectangle( src, tl, br, Scalar::all(255), 3, 8, 0 );
     
 
-
-    Mat gray;
-	cvtColor( src, gray, COLOR_BGR2GRAY );
-	equalizeHist( gray, gray );
+    //Mat gray;
+	//cvtColor( src, gray, COLOR_BGR2GRAY );
+	//equalizeHist( gray, gray );
 	sign_cascade.detectMultiScale( src, signs, 1.1, 3, 0|CASCADE_SCALE_IMAGE ,Size(150,150) );
 
     
-   // sign_cascade.detectMultiScale( fgMask, signs, 1.1, 3, 0|CASCADE_SCALE_IMAGE ,Size(150,150) );
-    Point center(src.cols / 2, src.rows / 2);
+    // sign_cascade.detectMultiScale( fgMask, signs, 1.1, 3, 0|CASCADE_SCALE_IMAGE ,Size(150,150) );
+    //Point center(src.cols / 2, src.rows / 2);
 
     int minIdx = -1;
-    float minDist = src.cols*src.rows;
     float maxArea = 0;
+    //float minDist = src.cols*src.rows;
 	for( int i = 0; i < signs.size(); i++ )
 	{
         Rect r = signs[i];
-        Point p(r.x + r.width/2,  r.y+r.height/2);
+        //Point p(r.x + r.width/2,  r.y+r.height/2);
+        //float res = cv::norm(center-p);
+        //float count = countNonZero(Mat(fgMask, r)); 
         
-        float count = countNonZero(Mat(fgMask, r)); 
-        float res = cv::norm(center-p);
-        
-        bool contains = (centroid & r).area() == r.area();
-        if (contains && count > maxArea) {
+        float area = r.area(); 
+        bool large_enough = area > 0.40*centroid.area();
+        bool completely_in = (centroid & r).area() >= (area-20);
+        if (large_enough && completely_in && area > maxArea) {
             minIdx = i;
-            maxArea = count;
+            maxArea = area;
         }
 
         /*        
