@@ -3,6 +3,7 @@
     <string name="learn_button">Learn</string>
     <string name="test_button">Test</string>
     <string name="fb_button">Feedback</string>
+    <string name="prefs_file">PREFS_FILE</string>
     <string name="camera_switch">Switch Camera</string>
     <string name="handed_switch">Switch to Lefty Mode</string>
     <string name="title_activity_learn">LearnActivity</string>
@@ -11,6 +12,10 @@
     <string name="camera_setting">FrontCameraEnabled</string>
     <string name="current_set">CurrentSet</string>
     <string name="handed_setting">IsLefty</string>
+    <string name="handed_message">What hand will you be using to sign?</string>
+    <string name="handed_left">Left</string>
+    <string name="handed_right">Right</string>
+    <string name="cancel">Cancel</string>
     <string name="success_message">Success!!!</string>
     <string name="failure_message">Failure!!!</string>
     <string name="welcome_message">Welcome to SignCoach!!!"</string>
