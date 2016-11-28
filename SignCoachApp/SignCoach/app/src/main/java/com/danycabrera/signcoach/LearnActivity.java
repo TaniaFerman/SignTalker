@@ -23,6 +23,7 @@ import android.view.ViewStub;
 import android.widget.TextView;
 import android.widget.ImageView;
 import android.widget.ViewFlipper;
+import android.widget.ProgressBar;
 import android.view.SurfaceView;
 
 import org.opencv.android.JavaCameraView;
@@ -35,8 +36,6 @@ import org.opencv.android.OpenCVLoader;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 
-import fragment.OptionsMenuFragment;
-
 public class LearnActivity extends AppCompatActivity implements CvCameraViewListener2, NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "OCV:LearnActivity";
     private static final String question_string = "Show me a", lesson_string = "This is a";
@@ -45,7 +44,6 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
     private ImageView iv_lesson;
     private ViewFlipper viewFlipper;
     private static int counter = 0, trueCount, falseCount;
-    private static long questionElapsed = 0, questionStart;
     private TestManager testManager;
     private Handler questionHandler;
     private LearnMessage current_message;
@@ -55,6 +53,7 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
     private CameraBridgeViewBase mOpenCvCameraView;
     Mat mGray;
     private static boolean camera_default, handed_default;
+    private ProgressBar progressBar;
     private SharedPreferences prefs;
     private Mat img; // Processed image
     private Mat imgOriginal; // Original image
@@ -63,6 +62,8 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
+    private long startTime;
+    private ProgressBarAnimation progressAnim;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,11 +98,14 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
         tv_question = (TextView) findViewById(R.id.tv_question); //Handles for the two messages we'll be changing
         tv_lesson = (TextView) findViewById(R.id.tv_lesson);
         iv_lesson = (ImageView) findViewById(R.id.iv_lesson);
+        progressBar = (ProgressBar) findViewById(R.id.progressbar);
         viewFlipper = (ViewFlipper) findViewById(R.id.learn_flipper);
         viewFlipper.setInAnimation(this, R.anim.slide_in);
         viewFlipper.setOutAnimation(this, R.anim.slide_out);
+        progressAnim = new ProgressBarAnimation(progressBar, 5000);
         testManager = new TestManager();
         nextQuestion(null);
+
         mOpenCvCameraView = (JavaCameraView) findViewById(R.id.show_camera_activity_java_surface_view);
         getCurrentPreferences();
         setCamera();
@@ -446,6 +450,7 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
             falseCount = 0;
         }
     };
+
     public void moveToLessonView(View v) {
         viewIsQuestion = false;
         viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.lesson_view)));
@@ -453,12 +458,14 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
 
     public void moveToQuestionView(View v) {
         viewIsQuestion = true;
-        questionElapsed = 0;
         trueCount = 0;
         falseCount = 0;
-        questionStart = SystemClock.elapsedRealtime();
         viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.question_view)));
         questionHandler.postDelayed(questionTimeOut, 5000);
+        progressBar.setProgress(0);
+        progressAnim.setProgress(100);
+        startTime = SystemClock.uptimeMillis();
+        Log.d(TAG, "Question started at" + Long.toString(startTime));
     }
 
     public static native boolean processFrame(long iAddr1, long iAddr2, char c);
