@@ -20,7 +20,6 @@ public class TestManager {
         initQueue();
         lesson_queue = new LinkedList<>();
         question_queue = new LinkedList<>();
-       // makeQuestionSet();
     }
     //Clears and fills queue with values from current set
     private void initQueue(){
