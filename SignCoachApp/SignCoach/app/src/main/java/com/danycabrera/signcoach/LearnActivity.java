@@ -8,9 +8,7 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.preference.PreferenceManager;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.support.design.widget.NavigationView;
@@ -37,19 +35,12 @@ import org.opencv.android.OpenCVLoader;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.logging.LogRecord;
-
 import fragment.OptionsMenuFragment;
 
 public class LearnActivity extends AppCompatActivity implements CvCameraViewListener2, NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "OCV:LearnActivity";
     private static final String question_string = "Show me a", lesson_string = "This is a";
     private static final String vowels = "AEFHILMNORSX";    //Letters which should be preceded by 'an'
-    public static final String PREFS_NAME = "SC_PREFS";
     private TextView tv_question, tv_lesson;
     private ImageView iv_lesson;
     private ViewFlipper viewFlipper;
@@ -58,7 +49,8 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
     private TestManager testManager;
     private Handler questionHandler;
     private LearnMessage current_message;
-    boolean camera_setting, handed_setting, viewIsQuestion = false;
+    boolean camera_setting, viewIsQuestion = false;
+    int handed_setting;
     // Loads camera view of OpenCV for us to use. This lets us see using OpenCV
     private CameraBridgeViewBase mOpenCvCameraView;
     Mat mGray;
@@ -92,7 +84,7 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
         navigationView.setNavigationItemSelectedListener(this);
         //-----------------------------------------------
 
-        //--------Add options menu fragment-------------------
+        //--------Add fragments-------------------
         Fragment opt_frag = getFragmentManager().findFragmentByTag("options_menu");
         if (opt_frag == null) {
             opt_frag = new OptionsMenuFragment();
@@ -102,7 +94,6 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
         }
         //-----------------------------------------------------
 
-        // current_char = "A";
         tv_question = (TextView) findViewById(R.id.tv_question); //Handles for the two messages we'll be changing
         tv_lesson = (TextView) findViewById(R.id.tv_lesson);
         iv_lesson = (ImageView) findViewById(R.id.iv_lesson);
@@ -111,7 +102,6 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
         viewFlipper.setOutAnimation(this, R.anim.slide_out);
         testManager = new TestManager();
         nextQuestion(null);
-        //   setMessage();
         mOpenCvCameraView = (JavaCameraView) findViewById(R.id.show_camera_activity_java_surface_view);
         getCurrentPreferences();
         setCamera();
@@ -333,7 +323,7 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
         super.onResume();
         getCurrentPreferences();
         camera_setting = getCurrentCameraSetting();
-        int currentSet = prefs.getInt(getString(R.string.current_set), -1);
+        int currentSet = prefs.getInt(getString(R.string.current_set), 0);
         if (!OpenCVLoader.initDebug()) {
             Log.d(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
             OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_0_0, this, mLoaderCallback);
@@ -360,12 +350,11 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
     }
 
     public void getCurrentPreferences() {
-        prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        prefs = getSharedPreferences(getString(R.string.prefs_file), MODE_PRIVATE);
         Log.d(TAG, "STARTING ACTIVITY");
         camera_default = getResources().getBoolean(R.bool.camera_default);
-        handed_default = getResources().getBoolean(R.bool.handed_default);
         camera_setting = getCurrentCameraSetting();
-        handed_setting = prefs.getBoolean(getString(R.string.handed_setting), handed_default);
+        handed_setting = prefs.getInt(getString(R.string.handed_setting), 0);
     }
 
     private boolean getCurrentCameraSetting() {
