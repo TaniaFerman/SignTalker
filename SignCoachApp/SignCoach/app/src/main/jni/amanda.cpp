@@ -76,7 +76,7 @@ bool checkIfCorrect(Mat &src, char letter) {
         
         float area = r.area(); 
         bool large_enough = area > 0.40*centroid.area();
-        bool completely_in = (centroid & r).area() >= (area-20);
+        bool completely_in = (centroid & r).area() >= (area-20); //TODO: this 20 needs to be checked
         if (large_enough && completely_in && area > maxArea) {
             minIdx = i;
             maxArea = area;
@@ -92,7 +92,7 @@ bool checkIfCorrect(Mat &src, char letter) {
 	}
     
     if (minIdx > -1) { 
-        //rectangle( src, signs[minIdx].tl(), signs[minIdx].br(), Scalar(0,0,255), 3, 8, 0 );
+        rectangle( src, signs[minIdx].tl(), signs[minIdx].br(), Scalar(0,0,255), 3, 8, 0 );
         return true;
     }
 
@@ -104,6 +104,7 @@ void fixRotation(Mat &src, Mat &dst, int rotation) {
     rot90(src, rotation);
     //copyMakeBorder( src, dst, top, bottom, left, right, borderType, value );
     resize(src,dst,sz);
+    flip(src,src,1);
 }
 
 void rot90(Mat &src, int flag){
