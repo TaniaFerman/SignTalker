@@ -20,11 +20,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewStub;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.ImageView;
 import android.widget.ViewFlipper;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.view.SurfaceView;
+import android.view.ViewGroup;
 
 import org.opencv.android.JavaCameraView;
 import org.opencv.android.BaseLoaderCallback;
@@ -113,7 +116,6 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setLayoutDirection(View.LAYOUT_DIRECTION_INHERIT);
         mOpenCvCameraView.setCvCameraViewListener(this);
-
     }
 
     private void updateCount(boolean val) {
@@ -375,7 +377,10 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
     public void onCameraViewStarted(int width, int height) {
         imgOriginal = new Mat(height, width, CvType.CV_8UC4);
         img = ImageOps.initImage(width, height);
-
+        FrameLayout viewFrame = (FrameLayout) findViewById(R.id.learnCameraView);
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) viewFrame.getLayoutParams();
+        lp.height = height;
+        viewFrame.setLayoutParams(lp);
         //initGlobals(FileOps.getStoragePath());
         Log.i("onCameraViewStarted", "Initialized mat with " + img.rows() + " x " + img.cols());
         Log.i("onCameraViewStarted", "Cameraview dims: " + mOpenCvCameraView.getWidth() + " x " + mOpenCvCameraView.getHeight());
