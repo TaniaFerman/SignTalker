@@ -111,7 +111,6 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
 
         mOpenCvCameraView = (JavaCameraView) findViewById(R.id.show_camera_activity_java_surface_view);
         getCurrentPreferences();
-        setCamera();
         setTitle("");
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setLayoutDirection(View.LAYOUT_DIRECTION_INHERIT);
@@ -196,10 +195,8 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
     }
 
     public void setCamera() {
-        Log.d(TAG, "setCamera: Current camera setting is " + ((camera_setting) ? "front" : "back"));
         mOpenCvCameraView.disableView();
-        if (camera_setting) mOpenCvCameraView.setCameraIndex(mOpenCvCameraView.CAMERA_ID_FRONT);
-        else mOpenCvCameraView.setCameraIndex(mOpenCvCameraView.CAMERA_ID_BACK);
+        mOpenCvCameraView.setCameraIndex(mOpenCvCameraView.CAMERA_ID_FRONT);
         mOpenCvCameraView.enableView();
     }
     //Concatenates and does appropriate grammar for provided message and character
@@ -226,8 +223,11 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
 
     private void getNextSet() {
         //TODO: Show success screen
+        Log.d(TAG, "Current message is " + (testManager.getCurrentMessage().isLesson()? "lesson": "question") + " of " + testManager.getCurrentMessage().getChar());
         if (testManager.moveToNextSet())
             current_message = testManager.getNextMessage();
+        Log.d(TAG, "Current message now is " + (current_message.isLesson()? "lesson": "question") + " of " + current_message.getChar());
+
     }
 
     private void returnResult(boolean result) {
@@ -411,7 +411,10 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
             }
         });
     }
-
+    public void doSkip(View v){
+        questionHandler.removeCallbacks(questionTimeOut);
+        fakeSuccess(v);
+    }
     public void fakeSuccess(View v) {
         returnResult(true);
         questionHandler.removeCallbacks(questionTimeOut);
@@ -444,7 +447,7 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
         @Override
         public void run() {
             Log.d(TAG, "TrueCount: " + Integer.toString(trueCount) + " FalseCount: " + Integer.toString(falseCount));
-            if(trueCount > falseCount){
+            if(trueCount > 0){
                 fakeSuccess(null);
             }
             else{
