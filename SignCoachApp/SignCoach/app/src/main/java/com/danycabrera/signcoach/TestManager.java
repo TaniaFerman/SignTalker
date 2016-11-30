@@ -44,6 +44,9 @@ public class TestManager {
         initQueue();
         return true;
     }
+    public LearnMessage getCurrentMessage(){
+        return current_message;
+    }
     public LearnMessage getNextMessage(){
         if(message_queue.size() == 0){
             if(lesson_queue.size() != 0){
