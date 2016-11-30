@@ -38,7 +38,7 @@ public class TestManager {
     public boolean moveToNextSet(){
         currentSetIndex++;
         if(currentSetIndex == questionSets.length){
-            currentSetIndex = questionSets.length - 1;
+            currentSetIndex = 0;
             return false;
         }
         initQueue();
