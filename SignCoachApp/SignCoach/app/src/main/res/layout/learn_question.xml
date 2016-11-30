@@ -47,6 +47,18 @@
             opencv:camera_id="any"
             />
     </FrameLayout>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentTop="@id/tv_question"
+        android:layout_alignParentEnd="true"
+        android:textColor="@color/skipButton"
+        android:textSize="10sp"
+        android:text="Skip"
+        android:onClick="doSkip"
+        style="?android:attr/borderlessButtonStyle"/>
 
    <!-- <Button
         android:text="Fake Success"
