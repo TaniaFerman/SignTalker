@@ -10,7 +10,7 @@ import java.util.LinkedList;
 public class TestManager {
     private static int[] progressTable = new int[26];    //Stores which signs have been tested
     private static int[] testTable;     //Stores which tests have been correctly answered
-    private static String[] questionSets = {"UTOK","BSVP","WEXF","ACLI","MRQG","NDYH"};
+    private static String[] questionSets = {"ABCD", "UTOK","BSVP","WEXF","ACLI","MRQG","NDYH"};
     private static int currentSetIndex;
     private LearnMessage current_message;
     private LinkedList<LearnMessage> message_queue, question_queue, lesson_queue;

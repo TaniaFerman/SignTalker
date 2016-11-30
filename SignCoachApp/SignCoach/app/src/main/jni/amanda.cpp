@@ -31,6 +31,9 @@ char loaded_letter = ' '; // Set to the currently loaded cascade file
 void rot90(Mat &src, int flag);
 void fixRotation(Mat &src, Mat &dst, int rotation);
 
+void darken(Mat &src, int maxInt, float phi, float theta);
+
+
 bool checkIfCorrect(Mat &src, char letter) {
 
 	// Load required cascade file for this letter if not already loaded
@@ -55,10 +58,11 @@ bool checkIfCorrect(Mat &src, char letter) {
     rectangle( src, tl, br, Scalar::all(255), 3, 8, 0 );
     
 
-    //Mat gray;
-	//cvtColor( src, gray, COLOR_BGR2GRAY );
+    Mat gray;
+	cvtColor( src, gray, COLOR_BGR2GRAY );
 	//equalizeHist( gray, gray );
-	sign_cascade.detectMultiScale( src, signs, 1.1, 3, 0|CASCADE_SCALE_IMAGE ,Size(150,150) );
+    darken(gray, 255, 1, 1);
+    sign_cascade.detectMultiScale( gray /*src*/, signs, 1.1, 3, 0|CASCADE_SCALE_IMAGE ,Size(150,150) );
 
     
     // sign_cascade.detectMultiScale( fgMask, signs, 1.1, 3, 0|CASCADE_SCALE_IMAGE ,Size(150,150) );
@@ -75,12 +79,28 @@ bool checkIfCorrect(Mat &src, char letter) {
         //float count = countNonZero(Mat(fgMask, r)); 
         
         float area = r.area(); 
-        bool large_enough = area > 0.40*centroid.area();
-        bool completely_in = (centroid & r).area() >= (area-20); //TODO: this 20 needs to be checked
+        bool large_enough = area > 0.40*centroid.area(); //TODO: 40 needs to be checked
+        bool completely_in = (centroid & r).area() >= (area-50); //TODO: this 20 needs to be checked
+
+        /*
         if (large_enough && completely_in && area > maxArea) {
             minIdx = i;
             maxArea = area;
         }
+        */
+        if (completely_in) {
+
+            if (area > maxArea && large_enough) {
+                minIdx = i;
+                maxArea = area;
+                rectangle( src, r.tl(), r.br(), Scalar(255,0,0), 5, 8, 0 ); //RED
+            } else {
+                rectangle( src, r.tl(), r.br(), Scalar(0,255,0), 5, 8, 0 ); //GREEN
+            }
+        }
+
+        //if (large_enough) rectangle( src, r.tl(), r.br(), Scalar(255,0,0), 8, 8, 0 ); //RED
+        //if (!completely_in) rectangle( src, r.tl(), r.br(), Scalar(0,255,0), 5, 8, 0 ); //GREEN
 
         /*        
         if (count > maxArea && res < minDist  && r.contains(center)) {
@@ -90,9 +110,11 @@ bool checkIfCorrect(Mat &src, char letter) {
         }
         */
 	}
-    
+
+    flip(src,src,1);
+
     if (minIdx > -1) { 
-        rectangle( src, signs[minIdx].tl(), signs[minIdx].br(), Scalar(0,0,255), 3, 8, 0 );
+        rectangle( src, signs[minIdx].tl(), signs[minIdx].br(), Scalar(0,0,255), -1, 8, 0 );
         return true;
     }
 
@@ -104,7 +126,7 @@ void fixRotation(Mat &src, Mat &dst, int rotation) {
     rot90(src, rotation);
     //copyMakeBorder( src, dst, top, bottom, left, right, borderType, value );
     resize(src,dst,sz);
-    flip(src,src,1);
+    //flip(src,src,1);
 }
 
 void rot90(Mat &src, int flag){
@@ -120,6 +142,24 @@ void rot90(Mat &src, int flag){
   } else if (flag != 0){ 
     cout  << "Unknown rotation flag(" << flag << ")" << endl;
   }
+}
+
+void darken(Mat &src, int maxInt, float phi, float theta)
+{
+    //src = exp((maxInt / phi) * (src / (maxInt / theta)), 2);
+    int i,j;
+    uchar* p;
+    for( i = 0; i < src.rows; ++i)
+    {
+        p = src.ptr<uchar>(i);
+        for ( j = 0; j < src.cols; ++j)
+        {
+            float val = p[j] / (maxInt / theta);
+            val = pow(val, 2);
+            uchar final_val = uchar((maxInt / phi) * val);
+            src.at<uchar>(i,j) = final_val;
+        }
+    }
 }
 
 
