@@ -12,7 +12,8 @@
 extern "C" {
 
 // Process a frame
-JNIEXPORT jboolean JNICALL
+//JNIEXPORT jboolean JNICALL
+JNIEXPORT jfloat JNICALL
 Java_com_danycabrera_signcoach_LearnActivity_processFrame(JNIEnv *env, jobject instance,
 																	jlong iAddr1, jlong iAddr2, jchar c) {
 

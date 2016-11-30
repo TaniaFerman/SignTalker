@@ -429,15 +429,19 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
         imgOriginal = inputFrame.rgba();
         // Process and return frame
         if(viewIsQuestion) {
-            boolean r = processFrame(imgOriginal.getNativeObjAddr(), img.getNativeObjAddr(), (char) current_message.getString().getBytes()[0]);
-            if (r) {
+            //boolean r = processFrame(imgOriginal.getNativeObjAddr(), img.getNativeObjAddr(), (char) current_message.getString().getBytes()[0]);
+            float r = processFrame(imgOriginal.getNativeObjAddr(), img.getNativeObjAddr(), (char) current_message.getString().getBytes()[0]);
+            Log.i("onCameraFrame", "r = " + Float.toString(r));
+            boolean yes = false;
+            if (r > 0.9) {
+                yes = true;
                 trueCount++;
                 Log.i("onCameraFrame", "This is an C!");
             } else {
                 falseCount++;
                 Log.i("onCameraFrame", "NOT C...");
             }
-            updateCount(r);
+            updateCount(yes);
         }
         return imgOriginal;
     }
@@ -445,10 +449,10 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
         @Override
         public void run() {
             Log.d(TAG, "TrueCount: " + Integer.toString(trueCount) + " FalseCount: " + Integer.toString(falseCount));
-            if(trueCount > 0){
+            if (trueCount > 0) {
                 fakeSuccess(null);
             }
-            else{
+            else {
                 fakeFailure(null);
                 Log.d(TAG, "going to failure town");
             }
@@ -467,12 +471,12 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
         trueCount = 0;
         falseCount = 0;
         viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.question_view)));
-        questionHandler.postDelayed(questionTimeOut, 5000);
+        questionHandler.postDelayed(questionTimeOut, 10000);
         progressBar.setProgress(0);
         progressAnim.setProgress(100);
         startTime = SystemClock.uptimeMillis();
         Log.d(TAG, "Question started at" + Long.toString(startTime));
     }
 
-    public static native boolean processFrame(long iAddr1, long iAddr2, char c);
+    public static native float processFrame(long iAddr1, long iAddr2, char c);
 }

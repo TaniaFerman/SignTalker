@@ -34,7 +34,7 @@ void fixRotation(Mat &src, Mat &dst, int rotation);
 void darken(Mat &src, int maxInt, float phi, float theta);
 
 
-bool checkIfCorrect(Mat &src, char letter) {
+float checkIfCorrect(Mat &src, char letter) {
 
 	// Load required cascade file for this letter if not already loaded
 	if (loaded_letter != letter) {
@@ -56,13 +56,13 @@ bool checkIfCorrect(Mat &src, char letter) {
     Point tl(int(src.cols * 0.15), int(src.rows * 0.15));
     Rect centroid(tl,br);
     rectangle( src, tl, br, Scalar::all(255), 3, 8, 0 );
-    
+    Point center(src.cols/2, src.rows/2);
 
     Mat gray;
 	cvtColor( src, gray, COLOR_BGR2GRAY );
 	//equalizeHist( gray, gray );
-    darken(gray, 255, 1, 1);
-    sign_cascade.detectMultiScale( gray /*src*/, signs, 1.1, 3, 0|CASCADE_SCALE_IMAGE ,Size(150,150) );
+    //darken(gray, 255, 1, 1);
+    sign_cascade.detectMultiScale( src, signs, 1.1, 3, 0|CASCADE_SCALE_IMAGE ,Size(150,150) );
 
     
     // sign_cascade.detectMultiScale( fgMask, signs, 1.1, 3, 0|CASCADE_SCALE_IMAGE ,Size(150,150) );
@@ -70,17 +70,18 @@ bool checkIfCorrect(Mat &src, char letter) {
 
     int minIdx = -1;
     float maxArea = 0;
+    int validCount = 0;
     //float minDist = src.cols*src.rows;
 	for( int i = 0; i < signs.size(); i++ )
 	{
         Rect r = signs[i];
-        //Point p(r.x + r.width/2,  r.y+r.height/2);
-        //float res = cv::norm(center-p);
+        Point p(r.x + r.width/2,  r.y+r.height/2);
+        float res = cv::norm(center-p);
         //float count = countNonZero(Mat(fgMask, r)); 
         
         float area = r.area(); 
         bool large_enough = area > 0.40*centroid.area(); //TODO: 40 needs to be checked
-        bool completely_in = (centroid & r).area() >= (area-50); //TODO: this 20 needs to be checked
+        bool completely_in = (centroid & r).area() >= (area-100); //TODO: this 20 needs to be checked
 
         /*
         if (large_enough && completely_in && area > maxArea) {
@@ -88,8 +89,12 @@ bool checkIfCorrect(Mat &src, char letter) {
             maxArea = area;
         }
         */
-        if (completely_in) {
-
+        //if (completely_in && r.contains(center)) {
+        if(completely_in && res < 50) {
+            rectangle( src, r.tl(), r.br(), Scalar(0,255,0), 5, 8, 0 ); //GREEN
+            validCount++;
+            //__android_log_print(ANDROID_LOG_ERROR, "checkIfCorrect", "Dist from center = %f", res);
+            /*
             if (area > maxArea && large_enough) {
                 minIdx = i;
                 maxArea = area;
@@ -97,6 +102,7 @@ bool checkIfCorrect(Mat &src, char letter) {
             } else {
                 rectangle( src, r.tl(), r.br(), Scalar(0,255,0), 5, 8, 0 ); //GREEN
             }
+            */
         }
 
         //if (large_enough) rectangle( src, r.tl(), r.br(), Scalar(255,0,0), 8, 8, 0 ); //RED
@@ -113,12 +119,18 @@ bool checkIfCorrect(Mat &src, char letter) {
 
     flip(src,src,1);
 
+    if (validCount == 0) return 0.0;
+
+    return 1.0 / validCount;
+
+    /*
     if (minIdx > -1) { 
         rectangle( src, signs[minIdx].tl(), signs[minIdx].br(), Scalar(0,0,255), -1, 8, 0 );
         return true;
     }
 
 	return false;
+    */
 }
 
 void fixRotation(Mat &src, Mat &dst, int rotation) {
