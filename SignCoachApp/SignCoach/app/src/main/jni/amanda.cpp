@@ -89,10 +89,11 @@ float checkIfCorrect(Mat &src, char letter) {
             maxArea = area;
         }
         */
-        if (completely_in && r.contains(center)) {
+        //if (completely_in && r.contains(center)) {
+        if(completely_in && res < 50) {
             rectangle( src, r.tl(), r.br(), Scalar(0,255,0), 5, 8, 0 ); //GREEN
             validCount++;
-            cout << "Dist to center = " << res << endl;
+            //__android_log_print(ANDROID_LOG_ERROR, "checkIfCorrect", "Dist from center = %f", res);
             /*
             if (area > maxArea && large_enough) {
                 minIdx = i;
