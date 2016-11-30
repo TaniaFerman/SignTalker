@@ -212,6 +212,7 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
         current_message = testManager.getNextMessage();
         if (current_message == null) {
             getNextSet();
+            current_message = testManager.getNextMessage();
         }
         setMessage();
         if (current_message.isLesson()) {
@@ -224,10 +225,7 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
     private void getNextSet() {
         //TODO: Show success screen
         Log.d(TAG, "Current message is " + (testManager.getCurrentMessage().isLesson()? "lesson": "question") + " of " + testManager.getCurrentMessage().getChar());
-        if (testManager.moveToNextSet())
-            current_message = testManager.getNextMessage();
-        Log.d(TAG, "Current message now is " + (current_message.isLesson()? "lesson": "question") + " of " + current_message.getChar());
-
+        testManager.moveToNextSet();
     }
 
     private void returnResult(boolean result) {
