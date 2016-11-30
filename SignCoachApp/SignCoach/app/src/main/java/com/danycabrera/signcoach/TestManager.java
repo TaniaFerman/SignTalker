@@ -4,6 +4,8 @@ package com.danycabrera.signcoach;
  * Created by Tristan on 2016-11-06.
  */
 
+import android.util.Log;
+
 import java.util.Random;
 import java.util.LinkedList;
 
@@ -24,8 +26,8 @@ public class TestManager {
     //Clears and fills queue with values from current set
     private void initQueue(){
         int len = questionSets[currentSetIndex].length();
-        if(message_queue == null) message_queue = new LinkedList<>();
-        else    message_queue.clear();
+        Log.d("InitQueue::", "initializing q on " + questionSets[currentSetIndex]);
+        message_queue.clear();
         for(int i = 0; i < len; i++){
             message_queue.addLast(new LearnMessage(true, questionSets[currentSetIndex].charAt(i)));
         }
@@ -37,8 +39,9 @@ public class TestManager {
     //Returns true on success, false when no sets left
     public boolean moveToNextSet(){
         currentSetIndex++;
-        if(currentSetIndex == questionSets.length){
+        if(currentSetIndex >= questionSets.length){
             currentSetIndex = 0;
+            Log.d("nextset:::", "New set is " + questionSets[currentSetIndex]);
             return false;
         }
         initQueue();
