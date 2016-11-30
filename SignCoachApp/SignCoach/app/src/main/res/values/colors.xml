@@ -6,6 +6,7 @@
     <color name="colorAccent">#ff5b93</color>
     <color name="titleText">#29f10a</color>
     <color name="backgroundColor">#efecf9</color>
+    <color name="skipButton">#6e6e6e</color>
 
     <color name="black_overlay">#66000000</color>
 </resources>
