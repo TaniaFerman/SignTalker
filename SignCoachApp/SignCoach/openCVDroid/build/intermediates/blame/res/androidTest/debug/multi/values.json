@@ -1,14 +1,6 @@
 [
     {
-        "outputFile": "C:\\SignCoachGit\\SignCoachApp\\AppAttempt\\openCVDroid\\build\\intermediates\\incremental\\mergeDebugAndroidTestResources\\merged.dir\\values\\values.xml",
-        "map": []
-    },
-    {
-        "outputFile": "C:\\SignCoach\\AppAttempt\\openCVDroid\\build\\intermediates\\incremental\\mergeDebugAndroidTestResources\\merged.dir\\values\\values.xml",
-        "map": []
-    },
-    {
-        "outputFile": "C:\\SignCoachGit\\SignCoachApp\\SignCoach\\openCVDroid\\build\\intermediates\\incremental\\mergeDebugAndroidTestResources\\merged.dir\\values\\values.xml",
+        "outputFile": "/home/memet/Projects/SignCoach/SignCoachApp/SignCoach/openCVDroid/build/intermediates/incremental/mergeDebugAndroidTestResources/merged.dir/values/values.xml",
         "map": []
     }
 ]
