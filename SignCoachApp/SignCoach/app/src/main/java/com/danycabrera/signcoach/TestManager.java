@@ -27,7 +27,8 @@ public class TestManager {
     private void initQueue(){
         int len = questionSets[currentSetIndex].length();
         Log.d("InitQueue::", "initializing q on " + questionSets[currentSetIndex]);
-        message_queue.clear();
+        if(message_queue == null)   message_queue = new LinkedList<>();
+        else message_queue.clear();
         for(int i = 0; i < len; i++){
             message_queue.addLast(new LearnMessage(true, questionSets[currentSetIndex].charAt(i)));
         }
@@ -41,10 +42,11 @@ public class TestManager {
         currentSetIndex++;
         if(currentSetIndex >= questionSets.length){
             currentSetIndex = 0;
+            setSet(currentSetIndex);
             Log.d("nextset:::", "New set is " + questionSets[currentSetIndex]);
             return false;
         }
-        initQueue();
+        setSet(currentSetIndex);
         return true;
     }
     public LearnMessage getCurrentMessage(){

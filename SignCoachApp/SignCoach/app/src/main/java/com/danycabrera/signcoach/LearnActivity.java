@@ -105,7 +105,7 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
         viewFlipper = (ViewFlipper) findViewById(R.id.learn_flipper);
         viewFlipper.setInAnimation(this, R.anim.slide_in);
         viewFlipper.setOutAnimation(this, R.anim.slide_out);
-        progressAnim = new ProgressBarAnimation(progressBar, 5000);
+        progressAnim = new ProgressBarAnimation(progressBar, 10000);
         testManager = new TestManager();
         nextQuestion(null);
 
