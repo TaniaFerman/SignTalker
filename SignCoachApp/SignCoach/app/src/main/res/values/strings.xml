@@ -16,16 +16,14 @@
     <string name="handed_left">Left</string>
     <string name="handed_right">Right</string>
     <string name="cancel">Cancel</string>
-    <string name="success_message">Success!!!</string>
-    <string name="failure_message">Failure!!!</string>
+    <string name="success_message">Great job!</string>
+    <string name="failure_message">Oops!\n Not quite right...</string>
     <string name="welcome_message">Welcome to SignCoach!!!"</string>
 
 
     <string name="title_activity_test">TestActivity</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_navigation">NavigationActivity</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
