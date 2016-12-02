@@ -89,13 +89,13 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
         //-----------------------------------------------
 
         //--------Add fragments-------------------
-        Fragment opt_frag = getFragmentManager().findFragmentByTag("options_menu");
+       /* Fragment opt_frag = getFragmentManager().findFragmentByTag("options_menu");
         if (opt_frag == null) {
             opt_frag = new OptionsMenuFragment();
             FragmentTransaction trans = getFragmentManager().beginTransaction();
             trans.add(opt_frag, "options_menu");
             trans.commit();
-        }
+        }*/
         //-----------------------------------------------------
 
         tv_question = (TextView) findViewById(R.id.tv_question); //Handles for the two messages we'll be changing
@@ -411,7 +411,8 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
     }
     public void doSkip(View v){
         questionHandler.removeCallbacks(questionTimeOut);
-        fakeSuccess(v);
+        nextQuestion(v);
+//        fakeSuccess(v);
     }
     public void fakeSuccess(View v) {
         returnResult(true);
@@ -460,6 +461,16 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
             falseCount = 0;
         }
     };
+    private Runnable resultDelay = new Runnable() {
+        @Override
+        public void run() {
+            trueCount = 0;
+            falseCount = 0;
+            questionHandler.postDelayed(questionTimeOut, 8000);
+            questionHandler.removeCallbacks(resultDelay);
+            Log.d(TAG, "Finished delay period");
+        }
+    };
 
     public void moveToLessonView(View v) {
         viewIsQuestion = false;
@@ -471,7 +482,7 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
         trueCount = 0;
         falseCount = 0;
         viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.question_view)));
-        questionHandler.postDelayed(questionTimeOut, 10000);
+        questionHandler.postDelayed(resultDelay, 2000);
         progressBar.setProgress(0);
         progressAnim.setProgress(100);
         startTime = SystemClock.uptimeMillis();
