@@ -86,6 +86,7 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
         toggle.syncState();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+       // drawer.
         //-----------------------------------------------
 
         //--------Add fragments-------------------
@@ -107,11 +108,11 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
         viewFlipper.setOutAnimation(this, R.anim.slide_out);
         progressAnim = new ProgressBarAnimation(progressBar, 10000);
         testManager = new TestManager();
-        nextQuestion(null);
+        testManager.setToolbar(toolbar);
+       // nextQuestion(null); //should be called in onresume
 
         mOpenCvCameraView = (JavaCameraView) findViewById(R.id.show_camera_activity_java_surface_view);
         getCurrentPreferences();
-        setTitle("");
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setLayoutDirection(View.LAYOUT_DIRECTION_INHERIT);
         mOpenCvCameraView.setCvCameraViewListener(this);
@@ -238,7 +239,7 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
         return vowels.contains(c);
     }
 
-    @Override
+   /* @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         SharedPreferences.Editor pref_edit;
         switch (item.getItemId()) {
@@ -257,7 +258,7 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
                 return false;
         }
         return true;
-    }
+    }*/
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
