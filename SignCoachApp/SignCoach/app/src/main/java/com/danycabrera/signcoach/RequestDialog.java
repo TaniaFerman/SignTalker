@@ -24,7 +24,7 @@ public class RequestDialog extends DialogFragment {
         final SharedPreferences prefs = this.getActivity().getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(R.string.handed_message)
-                .setPositiveButton(R.string.handed_left, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.handed_right, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // FIRE ZE MISSILES!
                         SharedPreferences.Editor edit = prefs.edit();
@@ -32,7 +32,7 @@ public class RequestDialog extends DialogFragment {
                         edit.commit();
                     }
                 })
-                .setNegativeButton(R.string.handed_right, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.handed_left, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         SharedPreferences.Editor edit = prefs.edit();
                         edit.putInt(getString(R.string.handed_setting), 0);

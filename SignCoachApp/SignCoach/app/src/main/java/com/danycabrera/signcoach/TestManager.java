@@ -5,6 +5,7 @@ package com.danycabrera.signcoach;
  */
 
 import android.util.Log;
+import android.support.v7.widget.Toolbar;
 
 import java.util.Random;
 import java.util.LinkedList;
@@ -14,6 +15,7 @@ public class TestManager {
     private static int[] testTable;     //Stores which tests have been correctly answered
     private static String[] questionSets = {"ABCD", "UTOK","BSVP","WEXF","ACLI","MRQG","NDYH"};
     private static int currentSetIndex;
+    private Toolbar toolbar;
     private LearnMessage current_message;
     private LinkedList<LearnMessage> message_queue, question_queue, lesson_queue;
 
@@ -22,6 +24,14 @@ public class TestManager {
         initQueue();
         lesson_queue = new LinkedList<>();
         question_queue = new LinkedList<>();
+    }
+    public void setToolbar(Toolbar toolbar){
+        this.toolbar = toolbar;
+        updateStatusText();
+    }
+    private void updateStatusText(){
+        String text = "Question Set " + Integer.toString(currentSetIndex + 1) + " / " + Integer.toString(questionSets.length);
+        toolbar.setTitle(text);
     }
     //Clears and fills queue with values from current set
     private void initQueue(){
@@ -47,6 +57,7 @@ public class TestManager {
             return false;
         }
         setSet(currentSetIndex);
+        updateStatusText();
         return true;
     }
     public LearnMessage getCurrentMessage(){
@@ -81,6 +92,7 @@ public class TestManager {
     }
     public void setSet(int setIndex){
         currentSetIndex = setIndex;
+        updateStatusText();
         initQueue();
     }
     public boolean currentSetCompleted(){
