@@ -13,7 +13,7 @@ import java.util.LinkedList;
 public class TestManager {
     private static int[] progressTable = new int[26];    //Stores which signs have been tested
     private static int[] testTable;     //Stores which tests have been correctly answered
-    private static String[] questionSets = {"ABCD", "UTOK","BSVP","WEXF","ACLI","MRQG","NDYH"};
+    private static String[] questionSets = {"BOLI", "UTOK","BSVP","WEXF","ACLI","MRQG","NDYH"}; //"WFY"
     private static int currentSetIndex;
     private Toolbar toolbar;
     private LearnMessage current_message;

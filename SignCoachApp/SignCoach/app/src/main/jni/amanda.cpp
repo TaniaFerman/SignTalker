@@ -66,8 +66,8 @@ float checkIfCorrect(Mat &src, char letter) {
     //rectangle( src, tl2, br2, Scalar::all(255), 3, 8, 0 );
     int buffer = r_max.area() - centroid.area();
 
-    Point br3(int(src.cols * 0.75), int(src.rows * 0.75));
-    Point tl3(int(src.cols * 0.25), int(src.rows * 0.25));
+    Point br3(int(src.cols * 0.80), int(src.rows * 0.80));
+    Point tl3(int(src.cols * 0.20), int(src.rows * 0.20));
     Rect r_min(tl3,br3);
     //rectangle( src, tl3, br3, Scalar::all(255), 3, 8, 0 );
 
@@ -99,49 +99,10 @@ float checkIfCorrect(Mat &src, char letter) {
         bool large_enough = area > 0.40*centroid.area(); //TODO: 40 needs to be checked
         bool completely_in = (centroid & r).area() >= (area-buffer);
 
-        /*
-        if (large_enough && completely_in && area > maxArea) {
-            minIdx = i;
-            maxArea = area;
-        }
-        */
-
-        __android_log_print(ANDROID_LOG_ERROR, "checkIfCorrect", "res = %f, Reject = %d, Weight = %f", res, rejectLevels[i], levelWeights[i]);
-        char txt[20];
-        sprintf(txt, "%0.2f", levelWeights[i]);
-
-        //if (rejectLevels[i] > 2.0) {
-            //putText(src, txt, r.tl(), 1, 3, Scalar::all(255), 5);
-            //rectangle(src, r.tl(), r.br(), Scalar(255, 0, 0), 5, 8, 0); //RED
-        //}
-
-        //if (completely_in && r.contains(center)) {
-        if(/*completely_in && res < 50*/ r.contains(center) && completely_in && levelWeights[i] > 2.5) {
-            putText(src, txt, r.tl(), 1, 3, Scalar::all(255), 5);
-            rectangle( src, r.tl(), r.br(), Scalar(0,255,0), 5, 8, 0 ); //GREEN
+        if (completely_in && levelWeights[i] > 2.2 && large_enough) {
+            //rectangle( src, r.tl(), r.br(), Scalar(0,255,0), 5, 8, 0 ); //GREEN
             validCount++;
-            //__android_log_print(ANDROID_LOG_ERROR, "checkIfCorrect", "Activity = %f", activity);
-            /*
-            if (area > maxArea && large_enough) {
-                minIdx = i;
-                maxArea = area;
-                rectangle( src, r.tl(), r.br(), Scalar(255,0,0), 5, 8, 0 ); //RED
-            } else {
-                rectangle( src, r.tl(), r.br(), Scalar(0,255,0), 5, 8, 0 ); //GREEN
-            }
-            */
         }
-
-        //if (large_enough) rectangle( src, r.tl(), r.br(), Scalar(255,0,0), 8, 8, 0 ); //RED
-        //if (!completely_in) rectangle( src, r.tl(), r.br(), Scalar(0,255,0), 5, 8, 0 ); //GREEN
-
-        /*        
-        if (count > maxArea && res < minDist  && r.contains(center)) {
-            minIdx = i;
-            minDist = res;
-            maxArea = count;
-        }
-        */
 	}
 
     flip(src,src,1);
@@ -149,46 +110,37 @@ float checkIfCorrect(Mat &src, char letter) {
     if (validCount == 0) return 0.0;
 
     return 1.0 / validCount;
-
-    /*
-    if (minIdx > -1) { 
-        rectangle( src, signs[minIdx].tl(), signs[minIdx].br(), Scalar(0,0,255), -1, 8, 0 );
-        return true;
-    }
-
-	return false;
-    */
 }
 
 float getScaleFactor(char letter)
 {
     float scale = 1.1;
     switch(letter) {
-        case 'A':
-        case 'C':
+        case 'A': scale = 4.0; break;
+        case 'C': scale = 1.5; break;
         case 'E':
         case 'I':
         case 'J':
         case 'L':
         case 'M':
-        case 'N':
+        case 'N': scale = 1.1; break;
         case 'X': scale = 1.9; break;
-        case 'K': scale = 2.7; break;
-        case 'B':
-        case 'D':
+        case 'K': scale = 1.1; break;
+        case 'B': scale = 4.0; break;
+        case 'D': scale = 4.0; break;
         case 'F':
         case 'O':
         case 'R':
         case 'U':
-        case 'V':
-        case 'W': scale = 1.9; break;
+        case 'V': scale = 1.1; break;
+        case 'W': scale = 4.0; break;
         case 'G':
         case 'H':
         case 'P':
-        case 'Q':
-        case 'S':
+        case 'Q': scale = 1.1; break;
+        case 'S': scale = 1.5; break;
         case 'T':
-        case 'Y':
+        case 'Y': scale = 4.0; break;
         case 'Z': scale = 1.9; break;
         default: break;
     }
