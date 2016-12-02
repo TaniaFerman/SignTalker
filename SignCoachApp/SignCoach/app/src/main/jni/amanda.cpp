@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include  <vector>
+#include <string>
 
 using namespace std;
 using namespace cv;
@@ -30,6 +31,7 @@ Ptr<BackgroundSubtractor> pMOG2 = createBackgroundSubtractorMOG2();
 char loaded_letter = ' '; // Set to the currently loaded cascade file
 void rot90(Mat &src, int flag);
 void fixRotation(Mat &src, Mat &dst, int rotation);
+float getScaleFactor(char letter);
 
 void darken(Mat &src, int maxInt, float phi, float theta);
 
@@ -49,7 +51,7 @@ float checkIfCorrect(Mat &src, char letter) {
 		loaded_letter = letter;
 	}
     
-    //pMOG2->apply(src, fgMask, 0.25);
+    //pMOG2->apply(src, fgMask, 0.09);
 
 	vector<Rect> signs;
     Point br(int(src.cols * 0.85), int(src.rows * 0.85));
@@ -58,30 +60,44 @@ float checkIfCorrect(Mat &src, char letter) {
     rectangle( src, tl, br, Scalar::all(255), 3, 8, 0 );
     Point center(src.cols/2, src.rows/2);
 
-    Mat gray;
-	cvtColor( src, gray, COLOR_BGR2GRAY );
+    Point br2(int(src.cols * 0.90), int(src.rows * 0.90));
+    Point tl2(int(src.cols * 0.10), int(src.rows * 0.10));
+    Rect r_max(tl2,br2);
+    //rectangle( src, tl2, br2, Scalar::all(255), 3, 8, 0 );
+    int buffer = r_max.area() - centroid.area();
+
+    Point br3(int(src.cols * 0.75), int(src.rows * 0.75));
+    Point tl3(int(src.cols * 0.25), int(src.rows * 0.25));
+    Rect r_min(tl3,br3);
+    //rectangle( src, tl3, br3, Scalar::all(255), 3, 8, 0 );
+
+    //Mat gray;
+	//cvtColor( src, gray, COLOR_BGR2GRAY );
 	//equalizeHist( gray, gray );
     //darken(gray, 255, 1, 1);
-    sign_cascade.detectMultiScale( src, signs, 1.1, 3, 0|CASCADE_SCALE_IMAGE ,Size(150,150) );
+    //sign_cascade.detectMultiScale( src, signs, 1.1, 3, 0|CASCADE_SCALE_IMAGE ,Size(150,150));
 
-    
-    // sign_cascade.detectMultiScale( fgMask, signs, 1.1, 3, 0|CASCADE_SCALE_IMAGE ,Size(150,150) );
+    float scaleFactor = getScaleFactor(letter);
+    vector<int> rejectLevels;
+    vector<double> levelWeights;
+    sign_cascade.detectMultiScale( src, signs, rejectLevels, levelWeights, scaleFactor, 3, 0|CASCADE_SCALE_IMAGE , r_min.size() /*Size(150,150)*/, r_max.size(), true);
     //Point center(src.cols / 2, src.rows / 2);
 
     int minIdx = -1;
     float maxArea = 0;
     int validCount = 0;
+    float activities[signs.size()];
     //float minDist = src.cols*src.rows;
 	for( int i = 0; i < signs.size(); i++ )
 	{
         Rect r = signs[i];
         Point p(r.x + r.width/2,  r.y+r.height/2);
         float res = cv::norm(center-p);
-        //float count = countNonZero(Mat(fgMask, r)); 
-        
+        //float activity = countNonZero(Mat(fgMask, r)) / float(r.width*r.height);
+
         float area = r.area(); 
         bool large_enough = area > 0.40*centroid.area(); //TODO: 40 needs to be checked
-        bool completely_in = (centroid & r).area() >= (area-100); //TODO: this 20 needs to be checked
+        bool completely_in = (centroid & r).area() >= (area-buffer);
 
         /*
         if (large_enough && completely_in && area > maxArea) {
@@ -89,11 +105,22 @@ float checkIfCorrect(Mat &src, char letter) {
             maxArea = area;
         }
         */
+
+        __android_log_print(ANDROID_LOG_ERROR, "checkIfCorrect", "res = %f, Reject = %d, Weight = %f", res, rejectLevels[i], levelWeights[i]);
+        char txt[20];
+        sprintf(txt, "%0.2f", levelWeights[i]);
+
+        //if (rejectLevels[i] > 2.0) {
+            //putText(src, txt, r.tl(), 1, 3, Scalar::all(255), 5);
+            //rectangle(src, r.tl(), r.br(), Scalar(255, 0, 0), 5, 8, 0); //RED
+        //}
+
         //if (completely_in && r.contains(center)) {
-        if(completely_in && res < 50) {
+        if(/*completely_in && res < 50*/ r.contains(center) && completely_in && levelWeights[i] > 2.5) {
+            putText(src, txt, r.tl(), 1, 3, Scalar::all(255), 5);
             rectangle( src, r.tl(), r.br(), Scalar(0,255,0), 5, 8, 0 ); //GREEN
             validCount++;
-            //__android_log_print(ANDROID_LOG_ERROR, "checkIfCorrect", "Dist from center = %f", res);
+            //__android_log_print(ANDROID_LOG_ERROR, "checkIfCorrect", "Activity = %f", activity);
             /*
             if (area > maxArea && large_enough) {
                 minIdx = i;
@@ -131,6 +158,42 @@ float checkIfCorrect(Mat &src, char letter) {
 
 	return false;
     */
+}
+
+float getScaleFactor(char letter)
+{
+    float scale = 1.1;
+    switch(letter) {
+        case 'A':
+        case 'C':
+        case 'E':
+        case 'I':
+        case 'J':
+        case 'L':
+        case 'M':
+        case 'N':
+        case 'X': scale = 1.9; break;
+        case 'K': scale = 2.7; break;
+        case 'B':
+        case 'D':
+        case 'F':
+        case 'O':
+        case 'R':
+        case 'U':
+        case 'V':
+        case 'W': scale = 1.9; break;
+        case 'G':
+        case 'H':
+        case 'P':
+        case 'Q':
+        case 'S':
+        case 'T':
+        case 'Y':
+        case 'Z': scale = 1.9; break;
+        default: break;
+    }
+
+    return scale;
 }
 
 void fixRotation(Mat &src, Mat &dst, int rotation) {
