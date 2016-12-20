@@ -23,12 +23,11 @@ Java_com_danycabrera_signcoach_LearnActivity_processFrame(JNIEnv *env, jobject i
 	Mat *src = (Mat *) iAddr1;
 	Mat *dst = (Mat *) iAddr2;
 
-
 	flip(*src, *src, 1);
 	rotate_90n(*src, *src, 90);
-	//__android_log_print(ANDROID_LOG_ERROR, "processFrame", "src address: %p (%d x %d)", src, src->cols, src->rows);
-	//__android_log_print(ANDROID_LOG_ERROR, "processFrame", "dst address: %p", dst);
 
+	// SAVE DEMO IMAGE AFTER 30 FRAMES
+	/*
 	if (dany_c < 30) {
 		dany_c++;
 	} else if (dany_c == 30) {
@@ -38,9 +37,9 @@ Java_com_danycabrera_signcoach_LearnActivity_processFrame(JNIEnv *env, jobject i
 		imwrite(sign_cascade_folder + "check.png", png);
 		__android_log_print(ANDROID_LOG_ERROR, "processFrame", "Image written!");
 	}
+	*/
 
 	float result = checkIfCorrect(*src, c);
-	//fixRotation(*src, *dst, 2);
 	flip(*src, *src, 1);
 	Size sz = dst->size();
 	cv::resize(*src, *dst, sz);

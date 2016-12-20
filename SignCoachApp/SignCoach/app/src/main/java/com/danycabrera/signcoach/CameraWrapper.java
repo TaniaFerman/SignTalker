@@ -31,14 +31,14 @@ public class CameraWrapper implements CameraBridgeViewBase.CvCameraViewListener2
 	public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
 		imgInput = inputFrame.rgba();
 		float r = LearnActivity.processFrame(imgInput.getNativeObjAddr(), imgOutput.getNativeObjAddr(), currentCharacter);
-		Log.i("onCameraFrame", "character " + currentCharacter + ", r = " + r);
+		//Log.i("onCameraFrame", "character " + currentCharacter + ", r = " + r);
 
 		if (r > 0.9) {
 			counter.trueCount++;
-			Log.i("onCameraFrame", "trueCount++");
+			//Log.i("onCameraFrame", "trueCount++");
 		} else {
 			counter.falseCount++;
-			Log.i("onCameraFrame", "falseCount++");
+			//Log.i("onCameraFrame", "falseCount++");
 		}
 		counter.updateCount(false);
 
