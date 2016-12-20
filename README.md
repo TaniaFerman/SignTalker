@@ -6,9 +6,9 @@
 
 ### Idea Proposal
 
-We are proposing a mobile app that will act as an educational tool for learning American Sign Language (ASL). The existing ASL educational apps only shows flash cards, and users cannot check if their hand position is accurate.    
+SignCoach is an educational tool for learning American Sign Language (ASL). The existing ASL educational apps only shows flash cards, and users cannot check if their hand position is accurate.    
 
-In our project we will use the camera on an Android device and existing computer vision machine learning to allow users to learn the ASL alphabet. The user would place her or his hand in a comfortable distance above the phone with the app open. Our mobile app will allow users to have an interactive learning, and to have an automatic feedback about their signing.
+In our project we use the camera on an Android device and existing computer vision machine learning algorithms to allow users to learn the ASL alphabet. The user would place her or his hand in a comfortable distance above the phone with the app open. Our mobile app allows users to have an interactive learning, and to have an automatic feedback about their signing.
 
 ### You can download SignCoach from our webpage
 
