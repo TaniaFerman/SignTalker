@@ -99,8 +99,8 @@ float checkIfCorrect(Mat &src, char letter) {
         bool large_enough = area > 0.40*centroid.area(); //TODO: 40 needs to be checked
         bool completely_in = (centroid & r).area() >= (area-buffer);
 
-        if (completely_in && levelWeights[i] > 2.2 && large_enough) {
-            //rectangle( src, r.tl(), r.br(), Scalar(0,255,0), 5, 8, 0 ); //GREEN
+        if (completely_in && levelWeights[i] > 2.0 && large_enough) {
+            rectangle( src, r.tl(), r.br(), Scalar(0,255,0), 5, 8, 0 ); //GREEN
             validCount++;
         }
 	}
@@ -126,7 +126,7 @@ float getScaleFactor(char letter)
         case 'N': scale = 1.1; break;
         case 'X': scale = 1.9; break;
         case 'K': scale = 1.1; break;
-        case 'B': scale = 4.0; break;
+        case 'B': scale = 3.5; break;
         case 'D': scale = 4.0; break;
         case 'F':
         case 'O':
@@ -164,8 +164,7 @@ void rot90(Mat &src, int flag){
   } else if (flag == 2) {
     transpose(src, src);  
     flip(src, src,0); 
-  } else if (flag ==3){
-    flip(src, src,-1);    
+  } else if (flag ==3){    flip(src, src,-1);
   } else if (flag != 0){ 
     cout  << "Unknown rotation flag(" << flag << ")" << endl;
   }

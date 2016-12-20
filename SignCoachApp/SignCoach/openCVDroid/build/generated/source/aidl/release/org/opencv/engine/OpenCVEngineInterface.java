@@ -1,6 +1,6 @@
 /*
  * This file is auto-generated.  DO NOT MODIFY.
- * Original file: /home/memet/Projects/SignCoach/SignCoachApp/SignCoach/openCVDroid/src/main/aidl/org/opencv/engine/OpenCVEngineInterface.aidl
+ * Original file: C:\\SignCoachGit\\SignCoachApp\\SignCoach\\openCVDroid\\src\\main\\aidl\\org\\opencv\\engine\\OpenCVEngineInterface.aidl
  */
 package org.opencv.engine;
 /**
