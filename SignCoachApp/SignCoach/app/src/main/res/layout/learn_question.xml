@@ -39,13 +39,14 @@
         android:background="@color/backgroundColor"
         android:layout_above="@id/learn_space"
         android:id="@+id/learnCameraView">
-        <org.opencv.android.JavaCameraView
+
+        <com.danycabrera.signcoach.CustomCameraView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/show_camera_activity_java_surface_view"
-            opencv:show_fps="False"
-            opencv:camera_id="any"
-            />
+            android:visibility="gone"
+            android:id="@+id/camera_view"
+            opencv:show_fps="false"
+            opencv:camera_id="front" />
     </FrameLayout>
     <Button
         android:layout_width="wrap_content"

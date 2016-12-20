@@ -39,34 +39,33 @@ import org.opencv.android.OpenCVLoader;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 
-public class LearnActivity extends AppCompatActivity implements CvCameraViewListener2, NavigationView.OnNavigationItemSelectedListener {
-    private static final String TAG = "OCV:LearnActivity";
+public class LearnActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final String question_string = "Show me a", lesson_string = "This is a";
     private static final String vowels = "AEFHILMNORSX";    //Letters which should be preceded by 'an'
     private TextView tv_question, tv_lesson;
     private ImageView iv_lesson;
     private ViewFlipper viewFlipper;
-    private static int counter = 0, trueCount, falseCount;
     private TestManager testManager;
     private Handler questionHandler;
     private LearnMessage current_message;
     boolean camera_setting, viewIsQuestion = false;
     int handed_setting;
-    // Loads camera view of OpenCV for us to use. This lets us see using OpenCV
-    private CameraBridgeViewBase mOpenCvCameraView;
-    Mat mGray;
-    private static boolean camera_default, handed_default;
+	private static boolean camera_default, handed_default;
     private ProgressBar progressBar;
     private SharedPreferences prefs;
-    private Mat img; // Processed image
-    private Mat imgOriginal; // Original image
-    private static final int REQUEST_EXTERNAL_STORAGE = 1;
-    private static String[] PERMISSIONS_STORAGE = {
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-    };
     private long startTime;
     private ProgressBarAnimation progressAnim;
+	public Counter counter = new Counter();;
+	public CameraWrapper cam = new CameraWrapper();
+
+
+	static {
+		System.loadLibrary("native-lib");
+
+		if(!OpenCVLoader.initDebug()){
+			Log.e("MainActivity", "OpenCV not loaded.");
+		}
+	}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,17 +88,11 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
        // drawer.
         //-----------------------------------------------
 
-        //--------Add fragments-------------------
-       /* Fragment opt_frag = getFragmentManager().findFragmentByTag("options_menu");
-        if (opt_frag == null) {
-            opt_frag = new OptionsMenuFragment();
-            FragmentTransaction trans = getFragmentManager().beginTransaction();
-            trans.add(opt_frag, "options_menu");
-            trans.commit();
-        }*/
-        //-----------------------------------------------------
+		// set up opencv camera wrapper
+		JavaCameraView camView = (JavaCameraView) findViewById(R.id.camera_view);
+		cam.init(camView, this, this.counter);
 
-        tv_question = (TextView) findViewById(R.id.tv_question); //Handles for the two messages we'll be changing
+		tv_question = (TextView) findViewById(R.id.tv_question); //Handles for the two messages we'll be changing
         tv_lesson = (TextView) findViewById(R.id.tv_lesson);
         iv_lesson = (ImageView) findViewById(R.id.iv_lesson);
         progressBar = (ProgressBar) findViewById(R.id.progressbar);
@@ -109,23 +102,11 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
         progressAnim = new ProgressBarAnimation(progressBar, 10000);
         testManager = new TestManager();
         testManager.setToolbar(toolbar);
-       // nextQuestion(null); //should be called in onresume
-
-        mOpenCvCameraView = (JavaCameraView) findViewById(R.id.show_camera_activity_java_surface_view);
-        getCurrentPreferences();
-        mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
-        mOpenCvCameraView.setLayoutDirection(View.LAYOUT_DIRECTION_INHERIT);
-        mOpenCvCameraView.setCvCameraViewListener(this);
     }
 
-    private void updateCount(boolean val) {
-        if (val) counter++;
-        else {
-            counter = 0;
-        }
-    }
 
     private void setMessage() {
+
         if (current_message.isLesson()) {
             tv_lesson.setText(doGrammarCat(lesson_string, current_message.getString()));
             iv_lesson.setImageDrawable(findDrawable(current_message.getString()));
@@ -134,6 +115,8 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
             tv_question.setText(doGrammarCat(question_string, current_message.getString()));
             moveToQuestionView(null);
         }
+
+		cam.currentCharacter = current_message.getChar();
     }
 
     private Drawable findDrawable(String sign) {
@@ -195,11 +178,6 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
         }
     }
 
-    public void setCamera() {
-        mOpenCvCameraView.disableView();
-        mOpenCvCameraView.setCameraIndex(mOpenCvCameraView.CAMERA_ID_FRONT);
-        mOpenCvCameraView.enableView();
-    }
     //Concatenates and does appropriate grammar for provided message and character
     private String doGrammarCat(String message, String c) {
         String vowel_grammar = " ";
@@ -225,7 +203,7 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
 
     private void getNextSet() {
         //TODO: Show success screen
-        Log.d(TAG, "Current message is " + (testManager.getCurrentMessage().isLesson()? "lesson": "question") + " of " + testManager.getCurrentMessage().getChar());
+        Log.d("LearnActivity", "Current message is " + (testManager.getCurrentMessage().isLesson()? "lesson": "question") + " of " + testManager.getCurrentMessage().getChar());
         testManager.moveToNextSet();
     }
 
@@ -238,27 +216,6 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
     private boolean isVowel(String c) {
         return vowels.contains(c);
     }
-
-   /* @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        SharedPreferences.Editor pref_edit;
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
-                break;
-            case R.id.camera_switch:            //This overrides the case in OptionsMenu fragment
-                camera_setting = !camera_setting;
-                pref_edit = prefs.edit();
-                pref_edit.putBoolean(getString(R.string.camera_setting), camera_setting);
-                if (!pref_edit.commit()) Log.d(TAG, "prefs not saved wtf");
-                Log.d(TAG, "New setting is " + ((camera_setting) ? "front" : "back"));
-                // setCamera();
-                break;
-            default:
-                return false;
-        }
-        return true;
-    }*/
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -295,32 +252,26 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
         }
     }
 
-    private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
-        @Override
-        public void onManagerConnected(int status) {
-            switch (status) {
-                case LoaderCallbackInterface.SUCCESS: {
-                    Log.i(TAG, "OpenCV loaded successfully aaa");
-                    //  setCamera();
-                }
-                break;
-                default: {
-                    super.onManagerConnected(status);
-                }
-                break;
-            }
-        }
-    };
+
+	private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
+		@Override
+		public void onManagerConnected(int status) {
+			if (status == LoaderCallbackInterface.SUCCESS) {
+				cam.enable();
+			} else {
+				super.onManagerConnected(status);
+			}
+		}
+	};
 
     @Override
     public void onPause() {
         SharedPreferences.Editor edit = prefs.edit();
         edit.putInt(getString(R.string.current_set), testManager.getCurrentSetIndex());
         edit.commit();
-        Log.d(TAG, "onPause: current set is " + Integer.toString(testManager.getCurrentSetIndex()));
+        Log.d("LearnActivity", "onPause: current set is " + Integer.toString(testManager.getCurrentSetIndex()));
         super.onPause();
-        if (mOpenCvCameraView != null)
-            mOpenCvCameraView.disableView();
+		cam.pause();
     }
 
     @Override
@@ -329,34 +280,21 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
         getCurrentPreferences();
         camera_setting = getCurrentCameraSetting();
         int currentSet = prefs.getInt(getString(R.string.current_set), 0);
-        if (!OpenCVLoader.initDebug()) {
-            Log.d(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
-            OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_0_0, this, mLoaderCallback);
-        } else {
-            Log.d(TAG, "OpenCV library found inside package. Using it!");
-            mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
-        }
-        Log.d(TAG, "onResume current set is " + Integer.toString(currentSet));
+        Log.d("LearnActivity", "onResume current set is " + Integer.toString(currentSet));
         testManager.setSet(currentSet);
-        Log.d(TAG, "Attempting to show set " + Integer.toString(currentSet));
+        Log.d("LearnActivity", "Attempting to show set " + Integer.toString(currentSet));
         nextQuestion(null);
-    }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        setCamera();
-    }
-
-    @Override
-    public void onStop() {
-        Log.d(TAG, "Stopping activity. Current camera setting is " + ((camera_setting) ? "front" : "back"));
-        super.onStop();
+		if (!OpenCVLoader.initDebug()) {
+			OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_0_0, this, mLoaderCallback);
+		} else {
+			mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
+		}
     }
 
     public void getCurrentPreferences() {
         prefs = getSharedPreferences(getString(R.string.prefs_file), MODE_PRIVATE);
-        Log.d(TAG, "STARTING ACTIVITY");
+        Log.d("LearnActivity", "STARTING ACTIVITY");
         camera_default = getResources().getBoolean(R.bool.camera_default);
         camera_setting = getCurrentCameraSetting();
         handed_setting = prefs.getInt(getString(R.string.handed_setting), 0);
@@ -369,26 +307,9 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //  if (mOpenCvCameraView != null)
-        //     mOpenCvCameraView.disableView();
+		cam.disable();
     }
 
-    public void onCameraViewStarted(int width, int height) {
-        imgOriginal = new Mat(height, width, CvType.CV_8UC4);
-        img = ImageOps.initImage(width, height);
-        FrameLayout viewFrame = (FrameLayout) findViewById(R.id.learnCameraView);
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) viewFrame.getLayoutParams();
-        lp.height = height;
-        viewFrame.setLayoutParams(lp);
-        //initGlobals(FileOps.getStoragePath());
-        Log.i("onCameraViewStarted", "Initialized mat with " + img.rows() + " x " + img.cols());
-        Log.i("onCameraViewStarted", "Cameraview dims: " + mOpenCvCameraView.getWidth() + " x " + mOpenCvCameraView.getHeight());
-    }
-
-    public void onCameraViewStopped() {
-        imgOriginal.release();
-        img.release();
-    }
 
     private void moveToSuccessView(View v) {
         viewIsQuestion = false;
@@ -427,11 +348,11 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
         moveToFailureView(v);
     }
 
-    public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
+    /*
+	public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
         imgOriginal = inputFrame.rgba();
         // Process and return frame
         if(viewIsQuestion) {
-            //boolean r = processFrame(imgOriginal.getNativeObjAddr(), img.getNativeObjAddr(), (char) current_message.getString().getBytes()[0]);
             float r = processFrame(imgOriginal.getNativeObjAddr(), img.getNativeObjAddr(), (char) current_message.getString().getBytes()[0]);
             Log.i("onCameraFrame", "r = " + Float.toString(r));
             boolean yes = false;
@@ -446,30 +367,29 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
             updateCount(yes);
         }
         return imgOriginal;
-    }
+    }*/
+
     private Runnable questionTimeOut = new Runnable() {
         @Override
         public void run() {
-            Log.d(TAG, "TrueCount: " + Integer.toString(trueCount) + " FalseCount: " + Integer.toString(falseCount));
-            if (trueCount > 0) {
+            Log.d("LearnActivity", counter.toString());
+            if (counter.trueCount > 0) {
                 fakeSuccess(null);
             }
             else {
                 fakeFailure(null);
-                Log.d(TAG, "going to failure town");
+                Log.d("LearnActivity", "going to failure town");
             }
-            trueCount = 0;
-            falseCount = 0;
+            counter.reset();
         }
     };
     private Runnable resultDelay = new Runnable() {
         @Override
         public void run() {
-            trueCount = 0;
-            falseCount = 0;
+            counter.reset();
             questionHandler.postDelayed(questionTimeOut, 8000);
             questionHandler.removeCallbacks(resultDelay);
-            Log.d(TAG, "Finished delay period");
+            Log.d("LearnActivity", "Finished delay period");
         }
     };
 
@@ -480,14 +400,13 @@ public class LearnActivity extends AppCompatActivity implements CvCameraViewList
 
     public void moveToQuestionView(View v) {
         viewIsQuestion = true;
-        trueCount = 0;
-        falseCount = 0;
+        counter.reset();
         viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.question_view)));
         questionHandler.postDelayed(resultDelay, 2000);
         progressBar.setProgress(0);
         progressAnim.setProgress(100);
         startTime = SystemClock.uptimeMillis();
-        Log.d(TAG, "Question started at" + Long.toString(startTime));
+        Log.d("LearnActivity", "Question started at" + Long.toString(startTime));
     }
 
     public static native float processFrame(long iAddr1, long iAddr2, char c);

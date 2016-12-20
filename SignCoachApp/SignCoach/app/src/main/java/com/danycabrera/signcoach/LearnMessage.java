@@ -7,10 +7,12 @@ package com.danycabrera.signcoach;
 public class LearnMessage {
     private boolean message_type = false;    //false for question, true for lesson
     private char character;
+
     LearnMessage(boolean type, char character){
         this.character = character;
         this.message_type = type;
     }
+
     public boolean isLesson(){
         return message_type;
     }

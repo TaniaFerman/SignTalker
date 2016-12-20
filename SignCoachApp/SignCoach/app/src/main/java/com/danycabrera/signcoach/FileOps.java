@@ -1,8 +1,11 @@
 package com.danycabrera.signcoach;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import java.io.File;
@@ -15,7 +18,15 @@ import java.util.Locale;
 
 public class FileOps {
 
-	static String datasetPath = "signcoach/data/v1";
+	static File externalStoragePath;
+	static String externalAppPath = "signcoach"; // Relative path to app files folder in external storage
+	static String datasetPath = "data/v1"; // Relative path to dataset in assets
+
+	private static final int REQUEST_EXTERNAL_STORAGE = 1;
+	private static String[] PERMISSIONS_STORAGE = {
+			Manifest.permission.READ_EXTERNAL_STORAGE,
+			Manifest.permission.WRITE_EXTERNAL_STORAGE
+	};
 
 	// Returns a hashset of strings with all the mounted storage paths
 	public static HashSet<String> getExternalMounts() {
@@ -53,35 +64,57 @@ public class FileOps {
 		return out;
 	}
 
-	// Returns the external storage path or an empty string if none found
-	public static String getStoragePath() {
-		String result = "";
-		HashSet<String> mounts = getExternalMounts();
-		for (String s : mounts) {
-			result = s;
+
+	// Sets external storage path (finishes with a "/"
+	// Creates app files directory if non-existent
+	// Verifies storage permissions and returns true if we have them (if not, we won't be able to access the file system)
+	public static boolean init(Activity act) {
+		try {
+			externalStoragePath = Environment.getExternalStorageDirectory();
+
+			if (!FileOps.verifyPermissions(act)) {
+				return false;
+			}
+
+			File dir = new File(externalStoragePath + "/" + externalAppPath + "/");
+			createDir(dir);
+		} catch (Exception e) {
+			Log.e("FileOps", "Unable to initialize FileOps.");
+			e.printStackTrace();
+			return false;
 		}
 
-		return result;
+		return true;
+	}
+
+	// Returns the full external app path
+	public static String getAppPath() {
+		return externalStoragePath + "/" + externalAppPath;
 	}
 
 	// Copies XML dataset from the file assets to the device if not present in filesystem
-	public static void copyDatasetFiles(Activity a) {
+	// Returns true on success
+	public static boolean copyDatasetFiles(Activity a) {
 		try {
-			File dir = new File(datasetPath);
+			String path = externalAppPath + "/" + datasetPath;
+			File dir = new File(externalStoragePath + "/" + path);
+
 			if (!dir.exists()) {
-				Log.i("FileOps", "Copying dataset files into external storage directory.");
-				FileOps.copyDirorfileFromAssetManager("data", datasetPath, a);
+				FileOps.copyDirorfileFromAssetManager(datasetPath, path, a);
 			} else {
-				Log.i("FileOps", "Found dataset files in external storage directory.");
+				Log.i("FileOps", "Found dataset files in external storage directory " + dir.toString());
 			}
 		} catch (IOException e) {
+			Log.e("FileOps", "Unable to copy dataset files to phone storage.");
 			e.printStackTrace();
+			return false;
 		}
+
+		return true;
 	}
 
 	public static String copyDirorfileFromAssetManager(String arg_assetDir, String arg_destinationDir, Activity a) throws IOException {
-		File sd_path = Environment.getExternalStorageDirectory();
-		String dest_dir_path = sd_path + addLeadingSlash(arg_destinationDir);
+		String dest_dir_path = externalStoragePath + addLeadingSlash(arg_destinationDir);
 		File dest_dir = new File(dest_dir_path);
 
 		createDir(dest_dir);
@@ -133,16 +166,47 @@ public class FileOps {
 		return path;
 	}
 
+	// Tries to create a directory in the path provided. Can create sub-directories as well.
 	public static void createDir(File dir) throws IOException {
 		if (dir.exists()) {
 			if (!dir.isDirectory()) {
 				throw new IOException("Can't create directory, a file is in the way");
 			}
 		} else {
-			dir.mkdirs();
+			try {
+				Log.i("FileOps", "createDir() " + dir.toString());
+				dir.mkdirs();
+			}  catch (Exception e) {
+				Log.e("FileOps", "Unable to create directory " + dir.toString());
+				e.printStackTrace();
+			}
+
 			if (!dir.isDirectory()) {
-				throw new IOException("Unable to create directory");
+				throw new IOException("Unable to create directory " + dir.toString());
 			}
 		}
+	}
+
+	// returns true if we have file permissions
+	// if not and Android_6+, show the request permission dialog
+	public static boolean verifyPermissions(Activity activity) {
+		int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+		if (permission != PackageManager.PERMISSION_GRANTED) {
+			// We don't have permission so prompt the user
+			Log.e("FileOps", "No permissions for external storage. I will try to get them from the user (Android 6+).");
+			ActivityCompat.requestPermissions(
+					activity,
+					PERMISSIONS_STORAGE,
+					REQUEST_EXTERNAL_STORAGE
+			);
+		}
+
+		return true;
+	}
+
+	// Returns the full dataset path, supposing the object has been initialized
+	public static String getDatasetPath() {
+		return externalStoragePath + "/" +  externalAppPath + "/" + datasetPath;
 	}
 }

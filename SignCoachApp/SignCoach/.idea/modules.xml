@@ -4,7 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/SignCoach.iml" filepath="$PROJECT_DIR$/SignCoach.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/openCVDroid/openCVDroid.iml" filepath="$PROJECT_DIR$/openCVDroid/openCVDroid.iml" />
+      <module fileurl="file://$PROJECT_DIR$/opencvdroid/opencvdroid.iml" filepath="$PROJECT_DIR$/opencvdroid/opencvdroid.iml" />
     </modules>
   </component>
 </project>

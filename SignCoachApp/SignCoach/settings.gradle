@@ -1,2 +1,2 @@
 include ':app'
-include ':openCVDroid'
+include ':opencvdroid'

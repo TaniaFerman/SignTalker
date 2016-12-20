@@ -1,8 +1,5 @@
 package com.danycabrera.signcoach;
 
-/**
- * Created by Tristan on 2016-11-06.
- */
 
 import android.util.Log;
 import android.support.v7.widget.Toolbar;
@@ -13,7 +10,7 @@ import java.util.LinkedList;
 public class TestManager {
     private static int[] progressTable = new int[26];    //Stores which signs have been tested
     private static int[] testTable;     //Stores which tests have been correctly answered
-    private static String[] questionSets = {"BOLI", "UTOK","BSVP","WEXF","ACLI","MRQG","NDYH"}; //"WFY"
+    private static String[] questionSets = {"OLKQ", "UTOK","BSVP","WEXF","ACLI","MRQG","NDYH"}; //"WFY"
     private static int currentSetIndex;
     private Toolbar toolbar;
     private LearnMessage current_message;

@@ -25,7 +25,7 @@ string sign_cascade_folder = "data/v1/";
 string sign_cascade_ext = ".xml";
 string hand_type = "R";
 
-Mat fgMask; 
+Mat fgMask;
 Ptr<BackgroundSubtractor> pMOG2 = createBackgroundSubtractorMOG2();
 
 char loaded_letter = ' '; // Set to the currently loaded cascade file
@@ -38,22 +38,22 @@ void darken(Mat &src, int maxInt, float phi, float theta);
 
 float checkIfCorrect(Mat &src, char letter) {
 
-	// Load required cascade file for this letter if not already loaded
-	if (loaded_letter != letter) {
-		//string sign_cascade_fullpath = sign_cascade_folder + string(1, letter) + hand_type + sign_cascade_name;
-		string sign_cascade_fullpath = sign_cascade_folder + string(1, letter) + sign_cascade_ext;
+    // Load required cascade file for this letter if not already loaded
+    if (loaded_letter != letter) {
+        //string sign_cascade_fullpath = sign_cascade_folder + string(1, letter) + hand_type + sign_cascade_name;
+        string sign_cascade_fullpath = sign_cascade_folder + string(1, letter) + sign_cascade_ext;
 
-		if(!sign_cascade.load(sign_cascade_fullpath)) {
-			__android_log_print(ANDROID_LOG_ERROR, "checkIfCorrect", "Error loading cascade file %s", sign_cascade_fullpath.c_str());
-			return false;
-		}
+        if(!sign_cascade.load(sign_cascade_fullpath)) {
+            __android_log_print(ANDROID_LOG_ERROR, "checkIfCorrect", "Error loading cascade file %s", sign_cascade_fullpath.c_str());
+            return false;
+        }
 
-		loaded_letter = letter;
-	}
-    
+        loaded_letter = letter;
+    }
+
     //pMOG2->apply(src, fgMask, 0.09);
 
-	vector<Rect> signs;
+    vector<Rect> signs;
     Point br(int(src.cols * 0.85), int(src.rows * 0.85));
     Point tl(int(src.cols * 0.15), int(src.rows * 0.15));
     Rect centroid(tl,br);
@@ -72,8 +72,8 @@ float checkIfCorrect(Mat &src, char letter) {
     //rectangle( src, tl3, br3, Scalar::all(255), 3, 8, 0 );
 
     //Mat gray;
-	//cvtColor( src, gray, COLOR_BGR2GRAY );
-	//equalizeHist( gray, gray );
+    //cvtColor( src, gray, COLOR_BGR2GRAY );
+    //equalizeHist( gray, gray );
     //darken(gray, 255, 1, 1);
     //sign_cascade.detectMultiScale( src, signs, 1.1, 3, 0|CASCADE_SCALE_IMAGE ,Size(150,150));
 
@@ -88,22 +88,22 @@ float checkIfCorrect(Mat &src, char letter) {
     int validCount = 0;
     float activities[signs.size()];
     //float minDist = src.cols*src.rows;
-	for( int i = 0; i < signs.size(); i++ )
-	{
+    for( int i = 0; i < signs.size(); i++ )
+    {
         Rect r = signs[i];
         Point p(r.x + r.width/2,  r.y+r.height/2);
         float res = cv::norm(center-p);
         //float activity = countNonZero(Mat(fgMask, r)) / float(r.width*r.height);
 
-        float area = r.area(); 
+        float area = r.area();
         bool large_enough = area > 0.40*centroid.area(); //TODO: 40 needs to be checked
         bool completely_in = (centroid & r).area() >= (area-buffer);
 
-        if (completely_in && levelWeights[i] > 2.2 && large_enough) {
-            //rectangle( src, r.tl(), r.br(), Scalar(0,255,0), 5, 8, 0 ); //GREEN
+        if (completely_in && levelWeights[i] > 2.0 && large_enough) {
+            rectangle( src, r.tl(), r.br(), Scalar(0,255,0), 5, 8, 0 ); //GREEN
             validCount++;
         }
-	}
+    }
 
     flip(src,src,1);
 
@@ -126,7 +126,7 @@ float getScaleFactor(char letter)
         case 'N': scale = 1.1; break;
         case 'X': scale = 1.9; break;
         case 'K': scale = 1.1; break;
-        case 'B': scale = 4.0; break;
+        case 'B': scale = 3.5; break;
         case 'D': scale = 4.0; break;
         case 'F':
         case 'O':
@@ -157,18 +157,17 @@ void fixRotation(Mat &src, Mat &dst, int rotation) {
 }
 
 void rot90(Mat &src, int flag){
-  //1=CW, 2=CCW, 3=180
-  if (flag == 1){
-    transpose(src, src);  
-    flip(src, src,1); 
-  } else if (flag == 2) {
-    transpose(src, src);  
-    flip(src, src,0); 
-  } else if (flag ==3){
-    flip(src, src,-1);    
-  } else if (flag != 0){ 
-    cout  << "Unknown rotation flag(" << flag << ")" << endl;
-  }
+    //1=CW, 2=CCW, 3=180
+    if (flag == 1){
+        transpose(src, src);
+        flip(src, src,1);
+    } else if (flag == 2) {
+        transpose(src, src);
+        flip(src, src,0);
+    } else if (flag ==3){    flip(src, src,-1);
+    } else if (flag != 0){
+        cout  << "Unknown rotation flag(" << flag << ")" << endl;
+    }
 }
 
 void darken(Mat &src, int maxInt, float phi, float theta)
@@ -195,7 +194,7 @@ void darken(Mat &src, int maxInt, float phi, float theta)
 
 void print(const char* format, ... ) {
 #ifdef debug
-	va_list args;
+    va_list args;
 
     char buff[100]; //Buffer for the time
 
@@ -227,7 +226,7 @@ void print(const char* format, ... ) {
 void show(const char *name, Mat &img)
 {
 #ifdef debug
-	namedWindow( name, 0 );
+    namedWindow( name, 0 );
     imshow( name, img );
     resizeWindow(name, 800, 600);
 #endif
@@ -235,14 +234,14 @@ void show(const char *name, Mat &img)
 
 Mat merge(Mat &img1, Mat &img2)
 {
-	Size sz1 = img1.size();
-	Size sz2 = img2.size();
-	//assert(sz1 == sz2);
+    Size sz1 = img1.size();
+    Size sz2 = img2.size();
+    //assert(sz1 == sz2);
 
-	Mat img3(sz1.height, sz1.width+sz2.width, CV_8UC3);
-	Mat left(img3, Rect(0, 0, sz1.width, sz1.height));
-	img1.copyTo(left);
-	Mat right(img3, Rect(sz1.width, 0, sz2.width, sz2.height));
-	img2.copyTo(right);
-	return img3;
+    Mat img3(sz1.height, sz1.width+sz2.width, CV_8UC3);
+    Mat left(img3, Rect(0, 0, sz1.width, sz1.height));
+    img1.copyTo(left);
+    Mat right(img3, Rect(sz1.width, 0, sz2.width, sz2.height));
+    img2.copyTo(right);
+    return img3;
 }
