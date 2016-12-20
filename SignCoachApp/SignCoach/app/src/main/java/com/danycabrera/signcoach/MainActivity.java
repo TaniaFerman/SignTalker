@@ -57,9 +57,9 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
         navigationView.setNavigationItemSelectedListener(this);
 
-        //Fragment opt_frag = getFragmentManager().findFragmentByTag("options_menu");
+       // Fragment opt_frag = getFragmentManager().findFragmentByTag("options_menu");
         setTitle("SignCoach");
-        /*if(opt_frag == null) {
+     /*   if(opt_frag == null) {
             opt_frag = new OptionsMenuFragment();
             FragmentTransaction trans = getFragmentManager().beginTransaction();
             trans.add(opt_frag, "options_menu");

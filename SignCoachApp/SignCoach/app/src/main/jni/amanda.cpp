@@ -157,17 +157,18 @@ void fixRotation(Mat &src, Mat &dst, int rotation) {
 }
 
 void rot90(Mat &src, int flag){
-    //1=CW, 2=CCW, 3=180
-    if (flag == 1){
-        transpose(src, src);
-        flip(src, src,1);
-    } else if (flag == 2) {
-        transpose(src, src);
-        flip(src, src,0);
-    } else if (flag ==3){    flip(src, src,-1);
-    } else if (flag != 0){
-        cout  << "Unknown rotation flag(" << flag << ")" << endl;
-    }
+
+  //1=CW, 2=CCW, 3=180
+  if (flag == 1){
+    transpose(src, src);  
+    flip(src, src,1); 
+  } else if (flag == 2) {
+    transpose(src, src);  
+    flip(src, src,0); 
+  } else if (flag ==3){    flip(src, src,-1);
+  } else if (flag != 0){ 
+    cout  << "Unknown rotation flag(" << flag << ")" << endl;
+  }
 }
 
 void darken(Mat &src, int maxInt, float phi, float theta)
